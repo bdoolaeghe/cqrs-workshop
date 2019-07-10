@@ -2,6 +2,24 @@
 
 Un workshop d'initiation à CQRS
 
+HowTo
+=====
+* Démarrer postgres et y charger un jeu de données :
+```
+cqrs-workshop/> make db/up
+```
+* Stopper postgres :
+```
+cqrs-workshop/> make db/down
+```
+* Lancer un CLI cql (psql) :
+```
+cqrs-workshop/> make db/psql
+```
+
+TODO
+====
+
 * monter une DB
 * schema.sql
 * script d'alim de produits

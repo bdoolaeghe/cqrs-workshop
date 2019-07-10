@@ -9,7 +9,7 @@ db/down:
 	docker-compose down
 
 db/clean:
-	docker-compose rm --force
+	docker-compose down rm --force
 
 db/psql:
 	docker exec -ti cqrsworkshop_postgres_1 bash -c "psql -U postgres"
