@@ -8,8 +8,10 @@ db/up:
 db/down:
 	docker-compose down
 
-db/clean:
-	docker-compose down rm --force
+db/log:
+	docker-compose logs
+
+db/reset: db/down db/up
 
 db/psql:
 	docker exec -ti cqrsworkshop_postgres_1 bash -c "psql -U postgres"
