@@ -1,0 +1,7 @@
+postgres:
+  image: postgres:9.4
+  volumes:
+    - ./src/main/sql/:/docker-entrypoint-initdb.d/
+#    - ./1-schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
+#    - ./2-data.sql:/docker-entrypoint-initdb.d/2-data.sql
+
