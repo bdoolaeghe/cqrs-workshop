@@ -14,5 +14,5 @@ db/log:
 db/reset: db/down db/up
 
 db/psql:
-	docker exec -ti cqrsworkshop_postgres_1 bash -c "psql -U postgres"
+	docker exec -ti my__postgres bash -c "psql -U postgres"
 

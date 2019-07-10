@@ -1,5 +1,8 @@
 postgres:
-  image: postgres:9.4
+  image: postgres:10.9
+  container_name: "my_postgres"
+  ports:
+    - "5432:5432"
   volumes:
     - ./src/main/sql/:/docker-entrypoint-initdb.d/
 #    - ./1-schema.sql:/docker-entrypoint-initdb.d/1-schema.sql

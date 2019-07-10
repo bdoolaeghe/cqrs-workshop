@@ -12,6 +12,10 @@ cqrs-workshop/> make db/up
 ```
 cqrs-workshop/> make db/down
 ```
+* reset postgres (et data) :
+```
+cqrs-workshop/> make db/reset
+```
 * Lancer un CLI cql (psql) :
 ```
 cqrs-workshop/> make db/psql
