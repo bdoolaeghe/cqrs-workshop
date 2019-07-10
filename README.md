@@ -23,6 +23,7 @@ cqrs-workshop/> make db/psql
 
 TODO
 ====
+cf [trello](https://trello.com/b/QlNUNO3K/formation-cqrs-es)
 
 * monter une DB
 * schema.sql
