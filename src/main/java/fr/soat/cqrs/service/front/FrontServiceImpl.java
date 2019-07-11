@@ -18,7 +18,7 @@ public class FrontServiceImpl implements FrontService {
 
     @Override
     @Transactional
-    public void order(Order order) {
-        orderDAO.insert(order);
+    public Long order(Order order) {
+        return orderDAO.insert(order);
     }
 }

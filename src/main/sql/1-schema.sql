@@ -5,13 +5,14 @@ CREATE TABLE product
     price        float,
     supply_price float
 );
-CREATE SEQUENCE product_seq START 4;
+ALTER SEQUENCE product_reference_seq RESTART WITH 4;
+
 
 CREATE TABLE product_order
 (
     id SERIAL PRIMARY KEY
 );
-CREATE SEQUENCE order_seq START 104;
+ALTER SEQUENCE product_order_id_seq RESTART WITH 104;
 
 CREATE TABLE order_line
 (
@@ -20,4 +21,4 @@ CREATE TABLE order_line
     reference SERIAL REFERENCES product(reference),
     quantity  int NOT NULL default 1
 );
-CREATE SEQUENCE line_seq START 1004;
+ALTER SEQUENCE order_line_id_seq RESTART WITH 1005;

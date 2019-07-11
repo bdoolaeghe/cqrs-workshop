@@ -4,6 +4,6 @@ import fr.soat.cqrs.model.Order;
 
 public interface FrontService {
 
-    void order(Order order);
+    Long order(Order order);
 
 }

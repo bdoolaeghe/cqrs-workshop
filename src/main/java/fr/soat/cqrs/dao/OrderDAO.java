@@ -6,5 +6,5 @@ public interface OrderDAO {
 
     Order getById(Long orderId);
 
-    void insert(Order order);
+    Long insert(Order order);
 }
