@@ -18,7 +18,7 @@ public class OrderDAOImpl implements OrderDAO {
             "order_line.quantity " +
             "from product_order inner join order_line " +
             "on order_line.order_id = product_order.id " +
-            "where product_order = ?";
+            "where product_order.id = ?";
 
     @Autowired
     public OrderDAOImpl(DataSource dataSource) {
