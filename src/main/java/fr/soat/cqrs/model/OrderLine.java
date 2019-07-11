@@ -7,6 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode
+@Builder
 public class OrderLine {
     private Long id;
     private Long productReference;

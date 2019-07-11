@@ -6,11 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @ToString
 @EqualsAndHashCode
+@Builder
 public class Order {
+
     private Long id;
     private List<OrderLine> lines = new ArrayList<>();
+
 }

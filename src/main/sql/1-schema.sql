@@ -11,7 +11,7 @@ CREATE TABLE product_order
 (
     id SERIAL PRIMARY KEY
 );
-CREATE SEQUENCE ordier_seq START 104;
+CREATE SEQUENCE order_seq START 104;
 
 CREATE TABLE order_line
 (
@@ -20,4 +20,4 @@ CREATE TABLE order_line
     reference SERIAL REFERENCES product(reference),
     quantity  int NOT NULL default 1
 );
-CREATE SEQUENCE line_seq START 1001;
+CREATE SEQUENCE line_seq START 1004;
