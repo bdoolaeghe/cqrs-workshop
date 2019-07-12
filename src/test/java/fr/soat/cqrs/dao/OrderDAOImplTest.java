@@ -44,7 +44,8 @@ public class OrderDAOImplTest {
 
     private Order newOrderWith2Lines() {
         Order order = new Order();
-        order.getLines().add(OrderLine.builder()
+        order.getLines()
+                .add(OrderLine.builder()
                 .productReference(1L)
                 .quantity(3)
                 .build());
