@@ -30,13 +30,6 @@ public class ProductDAOImpl implements ProductDAO {
 
     @Override
     public BestSales getBestSales() {
-        return jdbcTemplate.queryForObject(
-                "SELECT product.name as product_name, " +
-                        "SUM((price - supply_price) * quantity) AS product_margin  " +
-                        "FROM product JOIN order_line ON product.reference = order_line.reference " +
-                        "GROUP BY product.name " +
-                        "ORDER BY product_margin DESC " +
-                        "LIMIT 3",
-                new Object[0], new BestSalesMapper());
+        throw new RuntimeException("implement me to complete workshop1 !");
     }
 }
