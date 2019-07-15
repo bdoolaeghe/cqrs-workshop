@@ -6,9 +6,9 @@ build a backoffice service returning the "best sales"
 
 ## Setup the project
 * first of all, you'll need the following tools:
- ** JDK11
- ** docker & docker-compose
- ** your favorite IDE (e.g. [IntelliJ](https://www.jetbrains.com/idea/download/#section=linux))
+ - JDK11
+ - docker & docker-compose
+ - your favorite IDE (e.g. [IntelliJ](https://www.jetbrains.com/idea/download/#section=linux))
 
 You can install all of it running the [setup.sh](setup.sh) on Ubuntu/Debian
 
@@ -20,8 +20,8 @@ cqrs-workshop/> git checkout  workshop1
 ```
 
 * Import the project into your IDE (IntelliiJ)
- ** start [IntelliJ](https://www.jetbrains.com/idea/download/#section=linux) (run `)
- ** `File > Open` and select `cqrs-workshop/pom.xml`, import as a project. 
+ - start [IntelliJ](https://www.jetbrains.com/idea/download/#section=linux) (run `)
+ - `File > Open` and select `cqrs-workshop/pom.xml`, import as a project. 
 
 * make sure you can build the project:
 ```
@@ -32,7 +32,7 @@ Or/and in your IDE, check you can compile the project.
 * have a look to the [HowTo](HOWTO.md) page for some FAQ. 
 
 
-## Implement the [getBestSales()](https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/blob/master/src/main/java/fr/soat/cqrs/service/backoffice/BackOfficeServiceImpl.java#L28) service
+## Implement the [getBestSales()](https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/blob/master/src/main/java/fr/soat/cqrs/service/backoffice/BackOfficeServiceImpl.java#L28) service
 Consider the following e-commerce website (in this sample project, you will find only the Backend part, with no GUI):
 * a Postgres Database, with a [datamodel](https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/tree/master/src/main/sql)
 * some [DAO] classes (https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/tree/master/src/main/java/fr/soat/cqrs/dao)
