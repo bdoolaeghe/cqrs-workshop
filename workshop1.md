@@ -4,7 +4,7 @@ _Goal:_
 Given an e-commerce website, 
 build a backoffice service returning the "best sales"
 
-## Setup the project
+## Setup the project
 * first of all, you'll need the following tools:
  ** JDK11
  ** docker & docker-compose
