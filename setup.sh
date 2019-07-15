@@ -1,5 +1,5 @@
 #/bin/sh
-
+yes | sudo apt install openjdk-11-jdk
 yes | sudo apt install docker
 yes | sudo apt install docker-compose
 yes | sudo apt install make
