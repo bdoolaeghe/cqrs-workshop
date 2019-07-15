@@ -45,12 +45,12 @@ In this backend, you will find the following services:
 * [BackOffice.getBestSales()](https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/blob/master/src/main/java/fr/soat/cqrs/service/backoffice/BackOfficeService.java#L10), used by the _big boss_, to display the dashboard of the best sales ever !
 
 The first and second one are already implemented. Your job now is to implement the [getBestSales()](https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/blob/master/src/main/java/fr/soat/cqrs/service/backoffice/BackOfficeServiceImpl.java#L28), returning the 3 best sold products, 
-that is, for which we earned most money:
+that is, for which we had the biggest total margin:
 * the margin per order line is _(product.price - procuct.supply_price) x quantity_
-* the margin for a product is the sum of margin on every order.
-* the best sold products are the products having the highest margin.
+* the total margin for a product is the sum of product margin on all orders.
+* the best sales are the products having the highest total margin.
 
-_N.B. : once implemented, the test [should_find_best_sales()](https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/blob/master/src/test/java/fr/soat/cqrs/service/backoffice/BackOfficeServiceImplTest.java#L41) should pass green !!!_
+_N.B. : The service test [should_find_best_sales()](https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/blob/master/src/test/java/fr/soat/cqrs/service/backoffice/BackOfficeServiceImplTest.java#L41) is allready implemented, but it fails. Once you've implemented the service [getBestSales()](https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/blob/master/src/main/java/fr/soat/cqrs/service/backoffice/BackOfficeServiceImpl.java#L28), the test should pass green !!!_
 
 _Hint: to compute the 3 best sales, you can use the following SQL query:_
 ```
