@@ -1,9 +1,12 @@
 package fr.soat.cqrs.dao;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import fr.soat.cqrs.configuration.AppConfig;
 import fr.soat.cqrs.model.Order;
-import fr.soat.cqrs.model.OrderLine;
-import org.junit.Assert;
+import fr.soat.cqrs.model.order.OrderFixtures;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +14,10 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static fr.soat.cqrs.model.order.OrderFixtures.ProductEnum.ROBE_REINE_DES_NEIGES;
+import static fr.soat.cqrs.model.order.OrderFixtures.ProductEnum.TSHIRT_BOB_LEPONGE;
+import static fr.soat.cqrs.model.order.OrderFixtures.one;
+import static fr.soat.cqrs.model.order.OrderFixtures.two;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -22,37 +29,38 @@ public class OrderDAOImplTest {
     OrderDAO orderDAO;
 
     @Test
-    public void should_get_order_by_id() {
-        Order order = orderDAO.getById(101L);
-        Assert.assertNotNull(order);
-        assertThat(order.getLines().size()).isEqualTo(2);
-        assertThat(order.getLines().get(0).getQuantity()).isEqualTo(2);
-        assertThat(order.getLines().get(1).getQuantity()).isEqualTo(1);
-    }
-
-    @Test
     @Rollback(true)
-    public void should_save_new_order() {
-        Order order = newOrderWith2Lines();
-        Long orderId = orderDAO.insert(order);
+    public void should_save_and_load_order_by_id() {
+        // Given
+        Order order = OrderFixtures.buildOrder(
+                one(TSHIRT_BOB_LEPONGE),
+                two(ROBE_REINE_DES_NEIGES)
+        );
+        Long id = orderDAO.insert(order);
 
-        Order reloadedOrder = orderDAO.getById(orderId);
+        // When
+        Order reloadedOrder = orderDAO.getById(id);
 
-        Assert.assertNotNull(reloadedOrder);
-//        assertThat(reloadedOrder).isEqualTo(order);
+        // then
+        assertThat(asJson(reloadedOrder)).isEqualTo(asJson(order));
     }
 
-    private Order newOrderWith2Lines() {
-        Order order = new Order();
-        order.getLines()
-                .add(OrderLine.builder()
-                .productReference(1L)
-                .quantity(3)
-                .build());
-        order.getLines().add(OrderLine.builder()
-                .productReference(2L)
-                .quantity(5)
-                .build());
-        return order;
+    public static final Gson gson = new GsonBuilder()
+            .addSerializationExclusionStrategy(new ExclusionStrategy() {
+                @Override
+                public boolean shouldSkipField(FieldAttributes f) {
+                    return f.getDeclaredClass().equals(Long.class)
+                            && f.getName().equals("id");
+                }
+
+                @Override
+                public boolean shouldSkipClass(Class<?> clazz) {
+                    return false;
+                }
+            })
+            .setPrettyPrinting().create();
+
+    private static String asJson(Object o) {
+        return gson.toJson(o);
     }
 }
