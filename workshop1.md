@@ -32,7 +32,7 @@ Or/and in your IDE, check you can compile the project.
 * have a look to the [HowTo](HOWTO.md) page for some FAQ. 
 
 
-## Implement the [getBestSales()](https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/blob/master/src/main/java/fr/soat/cqrs/service/backoffice/BackOfficeServiceImpl.java#L28) service
+## Implement the [getBestSales()](https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/blob/workshop1/src/main/java/fr/soat/cqrs/service/backoffice/BackOfficeServiceImpl.java#L28) service
 Consider the following e-commerce website (in this sample project, you will find only the Backend part, with no GUI):
 * a Postgres Database, with a [datamodel](https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/tree/master/src/main/sql)
 * some [DAO] classes (https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/tree/master/src/main/java/fr/soat/cqrs/dao)
@@ -40,17 +40,17 @@ Consider the following e-commerce website (in this sample project, you will find
 ... A classic [n-tier architecture](https://en.wikipedia.org/wiki/Multitier_architecture).
 
 In this backend, you will find the following services:
-* [FrontOffice.order(order)](https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/blob/master/src/main/java/fr/soat/cqrs/service/front/FrontService.java#L7), invoked by a _customer_ to pass a new order.
-* [BackOffice.getOrder(orderId)](https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/blob/master/src/main/java/fr/soat/cqrs/service/backoffice/BackOfficeService.java#L8), invoked by the _order preparers_, to bundle the shipments.
-* [BackOffice.getBestSales()](https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/blob/master/src/main/java/fr/soat/cqrs/service/backoffice/BackOfficeService.java#L10), used by the _big boss_, to display the dashboard of the best sales ever !
+* [FrontOffice.order(order)](https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/blob/workshop1/src/main/java/fr/soat/cqrs/service/front/FrontService.java#L7), invoked by a _customer_ to pass a new order.
+* [BackOffice.getOrder(orderId)](https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/blob/workshop1/src/main/java/fr/soat/cqrs/service/backoffice/BackOfficeService.java#L8), invoked by the _order preparers_, to bundle the shipments.
+* [BackOffice.getBestSales()](https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/blob/workshop1/src/main/java/fr/soat/cqrs/service/backoffice/BackOfficeService.java#L10), used by the _big boss_, to display the dashboard of the best sales ever !
 
-The first and second one are already implemented. Your job now is to implement the [getBestSales()](https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/blob/master/src/main/java/fr/soat/cqrs/service/backoffice/BackOfficeServiceImpl.java#L28), returning the 3 best sold products, 
+The first and second one are already implemented. Your job now is to implement the [getBestSales()](https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/blob/workshop1/src/main/java/fr/soat/cqrs/service/backoffice/BackOfficeServiceImpl.java#L28), returning the 3 best sold products, 
 that is, for which we earned most money:
 * the margin per order line is _(product.price - procuct.supply_price) x quantity_
 * the margin for a product is the sum of margin on every order.
 * the best sold products are the products having the highest margin.
 
-_N.B. : once implemented, the test [should_find_best_sales()](https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/blob/master/src/test/java/fr/soat/cqrs/service/backoffice/BackOfficeServiceImplTest.java#L41) should pass green !!!_
+_N.B. : once implemented, the test [should_find_best_sales()](https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/blob/workshop1/src/test/java/fr/soat/cqrs/service/backoffice/BackOfficeServiceImplTest.java#L41) should pass green !!!_
 
 _Hint: to compute the 3 best sales, you can use the following SQL query:_
 ```
