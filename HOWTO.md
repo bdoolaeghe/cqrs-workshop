@@ -27,10 +27,10 @@ cqrs-workshop/> make db/psql
 
 FAQ
 ===
-Q. I clone the repository, but a maven build report some tests failures.
-A. The *master* branch contains junit tests, but partly implemented production code behind ! Your job is to make the tests pass green after having implemented the missing production code, described in the workshops...
+## I clone the repository, but a maven build report some tests failures.
+The *master* branch contains junit tests, but partly implemented production code behind ! Your job is to make the tests pass green after having implemented the missing production code, described in the workshops...
 
-Q. My IDE shows compilation errros on unexisting getter/Setter, or logger....
-A. Lombok is not activated in your IDE. 
+## My IDE shows compilation errros on unexisting getter/Setter, or logger....
+Lombok is not activated in your IDE. 
 * Install the lombok plugin. File > Settings > plugins > marketplace (search lombok and install)
 * enable the annotation processing. In IntelliJ, File > settings > Build, execution, deployments > Compiler > Annotation processor > Enable annotation processing
