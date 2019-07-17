@@ -27,20 +27,20 @@ public class FrontServiceImpl implements FrontService {
     @Override
     @Transactional
     public Long order(Order order) {
-        updateOrderProdcutsMargin(order);
-        return orderDAO.insert(order);
-    }
+        // 1. save order in product_order
+        Long inserted = orderDAO.insert(order);
 
-    private void updateOrderProdcutsMargin(Order order) {
         for (OrderLine orderLine : order.getLines()) {
+            // 2. for each product, compute the margin to add
             Long productReference = orderLine.getProductReference();
             int quantity = orderLine.getQuantity();
             Product product = productDAO.getByReference(productReference);
+            float productMargin = Math.round((product.getPrice() - product.getSupplyPrice()) * quantity);
 
-            // compute margin
-            float productMargin = product.getPrice() - product.getSupplyPrice();
-            float orderLineMargin = Math.round(productMargin * quantity); // round() because of floating point arithmetic issues
-            productMarginDAO.incrementProductMargin(productReference, product.getName(), orderLineMargin);
+            // 3. update total_margin in product_margin table
+            productMarginDAO.incrementProductMargin(productReference, product.getName(), productMargin);
         }
+        return inserted;
     }
+
 }
