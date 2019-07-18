@@ -30,17 +30,13 @@ public class ProductMarginDAOImpl implements ProductMarginDAO {
 
     @Override
     public void incrementProductMargin(Long productReference, String productName, float marginToAdd) {
-        // increment total_margin of product
-        String updateSql =
-                "UPDATE product_margin " +
-                "SET total_margin = total_margin + ? " +
-                "WHERE product_reference = ?";
-        int updated = jdbcTemplate.update(updateSql, marginToAdd, productReference);
-
-        // if product not sold yet, we need to init its total_margin
-        if (updated == 0) {
-            String insertSQL = "INSERT INTO product_margin (product_reference, product_name, total_margin) VALUES (?, ?, ?)";
-            jdbcTemplate.update(insertSQL, productReference, productName, marginToAdd);
-        }
+        // try to insert initial total_margin. If already exists, increment total_margin
+        String upsertSQL = "INSERT INTO product_margin (product_reference, product_name, total_margin)" +
+                " VALUES (?, ?, ?) " +
+                "ON CONFLICT (product_reference) DO UPDATE " +
+                "SET total_margin = product_margin.total_margin + ? " +
+                "WHERE product_margin.product_reference = ?";
+        jdbcTemplate.update(upsertSQL, productReference, productName, marginToAdd, marginToAdd, productReference);
     }
+
 }
