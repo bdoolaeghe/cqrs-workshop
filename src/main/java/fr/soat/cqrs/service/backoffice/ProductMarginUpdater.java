@@ -30,7 +30,7 @@ public class ProductMarginUpdater {
 
     @Async
     @Transactional
-    @TransactionalEventListener(phase = AFTER_COMMIT)
+    @EventListener
     public void onOrderSavedEvent(OrderSavedEvent orderSavedEvent) {
         log.info("Received " + orderSavedEvent);
         Order order  = orderSavedEvent.getOrder();

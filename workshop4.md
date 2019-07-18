@@ -47,34 +47,3 @@ TimeUnit.SECONDES.sleep(1);
 // check getBestSales()
 ```
 All good now ?
-
-
-## Remaining design issues with async
-
-### Inconsistency due to distinct transactions
-What will happen if the `product_order` table update fails ? whatever, the event has been raised and consumed by `ProductMarginUpdater`... That means:
-* order is not saved in `product_order`...
-* but `total_margin` has been increased in `product_margin` !
-
-It is impossible de regroup `product_order` and `product_margin` updates in a same transaction, due to async... 
-BUT, we can choose to raise the event only if the `product_order` update commit succeed. To apply that strategy, annotate the `onOrderSavedEvent()` method  with `@TransactionalEventListener` instead of `@EventListener`. 
-This will invoke the listener callback just after the commit of transaction made by the publisher: 
-````
-@Service
-public class ProductMarginUpdater {
- 
-    @Async
-    @Transactional
-    @TransactionalEventListener(phase = AFTER_COMMIT)
-    public void onOrderSavedEvent(OrderSavedEvent orderSavedEvent) {
-       ...
-    }
-}
-````
-N.B.; `@TransactionalEventListener` means the callback invocation depends on the *publisher* transaction state. The `@Transactional` means the *subscriber* callback will occur in a new transaction...
-
-
-### Inconsistency due to event disordering
-use 1-thread thread pool
-
-*
