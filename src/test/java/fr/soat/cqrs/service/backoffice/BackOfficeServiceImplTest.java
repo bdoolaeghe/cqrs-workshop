@@ -8,8 +8,10 @@ import fr.soat.cqrs.service.front.FrontService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -27,6 +29,8 @@ public class BackOfficeServiceImplTest {
     private FrontService frontService;
 
     @Test
+    @Transactional
+    @Rollback(true)
     public void should_find_best_sales() {
         // Given
         somebodyOrders(
