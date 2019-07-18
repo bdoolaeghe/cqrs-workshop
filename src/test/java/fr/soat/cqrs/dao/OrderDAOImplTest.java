@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import static fr.soat.cqrs.model.order.OrderFixtures.ProductEnum.ROBE_REINE_DES_NEIGES;
 import static fr.soat.cqrs.model.order.OrderFixtures.ProductEnum.TSHIRT_BOB_LEPONGE;
@@ -29,6 +30,7 @@ public class OrderDAOImplTest {
     OrderDAO orderDAO;
 
     @Test
+    @Transactional
     @Rollback(true)
     public void should_save_and_load_order_by_id() {
         // Given
