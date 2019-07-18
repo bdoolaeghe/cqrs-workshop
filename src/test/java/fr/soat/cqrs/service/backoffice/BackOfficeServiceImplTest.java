@@ -52,7 +52,6 @@ public class BackOfficeServiceImplTest {
                 two(TSHIRT_BOB_LEPONGE),
                 three(CHAUSSETTES_SPIDERMAN)
                 );
-        TimeUnit.SECONDS.sleep(1); // wait for the async listener action termination....
 
         // When
         BestSales bestSales = backOfficeService.getBestSales();

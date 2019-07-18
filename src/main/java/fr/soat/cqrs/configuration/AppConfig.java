@@ -19,7 +19,6 @@ import java.sql.SQLException;
 @ComponentScan("fr.soat.cqrs")
 @PropertySource("classpath:database.properties")
 @EnableTransactionManagement
-@EnableAsync
 public class AppConfig {
 
     @Autowired

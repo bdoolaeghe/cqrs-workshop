@@ -28,8 +28,6 @@ public class ProductMarginUpdater {
         this.productMarginDAO = productMarginDAO;
     }
 
-    @Async
-    @Transactional
     @EventListener
     public void onOrderSavedEvent(OrderSavedEvent orderSavedEvent) {
         log.info("Received " + orderSavedEvent);

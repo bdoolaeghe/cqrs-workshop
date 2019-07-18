@@ -29,7 +29,7 @@ public class ProductMarginUpdater {
 By this way, the subscriber will be invoked in a dedicated thread, and won't block the execution of `FrontService.order()`.
 
 *N.B.: You can check this [tutorial](https://www.baeldung.com/spring-events#annotation-driven) for more details on `@Async`*
-*N.B.: `onOrderSavedEvent()` is now `@Transactional` decorated, because the async consumer works now in a different transactional context from the publisher one.*
+*N.B.: `onOrderSavedEvent()` should also be now `@Transactional` decorated, because the async consumer works now in a different transactional context from the publisher one.*
 
 
 ## Test it !
