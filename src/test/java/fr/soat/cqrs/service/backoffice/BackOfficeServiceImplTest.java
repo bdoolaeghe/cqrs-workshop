@@ -5,14 +5,15 @@ import fr.soat.cqrs.model.BestSales;
 import fr.soat.cqrs.model.Order;
 import fr.soat.cqrs.model.order.OrderFixtures;
 import fr.soat.cqrs.service.front.FrontService;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 
+import javax.sql.DataSource;
 import java.util.List;
 
 import static fr.soat.cqrs.model.order.OrderFixtures.ProductEnum.*;
@@ -27,10 +28,18 @@ public class BackOfficeServiceImplTest {
     private BackOfficeService backOfficeService;
     @Autowired
     private FrontService frontService;
+    @Autowired
+    private DataSource dataSource;
+
+    @Before
+    public void setUp() {
+        // We need to clean the DB, because the previous test run commited some data
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        jdbcTemplate.update("TRUNCATE product_margin;");
+        jdbcTemplate.update("TRUNCATE product_order CASCADE;");
+    }
 
     @Test
-    @Transactional
-    @Rollback(true)
     public void should_find_best_sales() {
         // Given
         somebodyOrders(
