@@ -48,48 +48,31 @@ TimeUnit.SECONDES.sleep(1);
 ```
 All good now ?
 
-### Concurrent duplicate insert issue
-You probably also should have another issue with that test:
-```
-ERROR org.springframework.aop.interceptor.SimpleAsyncUncaughtExceptionHandler - Unexpected exception occurred invoking async method: public void fr.soat.cqrs.service.backoffice.ProductMarginUpdater.onOrderSavedEvent(fr.soat.cqrs.event.OrderSavedEvent)
-org.springframework.dao.DuplicateKeyException: PreparedStatementCallback; SQL [INSERT INTO product_margin (product_reference, product_name, total_margin) VALUES (?, ?, ?)]; ERROR: duplicate key value violates unique constraint "product_margin_pkey"
-  Détail : Key (product_reference)=(2) already exists.; nested exception is org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint "product_margin_pkey"
-  Détail : Key (product_reference)=(2) already exists.
-```
-What is happening ? As the `ProductMarginUpdater` is invoked in a separate thread, when we save sequentially 2 orders, we trigger 2 concurrent `ProductMarginUpdater` executions (one per product order). Unfortunately, our implementation is not protected against concurrent modifications:
-```
-   public void incrementProductMargin(Long productReference, String productName, float marginToAdd) {
-        // increment total_margin of product
-        ...
-        int updated = jdbcTemplate.update(...);
 
-        // if product not sold yet, we need to init its total_margin
-        if (updated == 0) {
-            ...
-            jdbcTemplate.insert(...);
-        }
-    }
-```  
-That implementation was fine in sync world, but fails in concurrent context: if 2 concurrent updates occurs (and return 0 updated rows when the product margin is not found), we have 2 concurrent insert attempt for the same product ! (failure) 
-To make it work, we need to protect against concurrent invocations. Different ways to do that, but the simplest one is to let the DB manage the concurrent writes, by applying one atomic upsert instead of an update followed by an insert:
-```
-    @Override
-    public void incrementProductMargin(Long productReference, String productName, float marginToAdd) {
-        // try to insert initial total_margin. If already exists, increment total_margin
-        String upsertSQL =
-                "INSERT INTO product_margin (product_reference, product_name, total_margin)" +
-                " VALUES (?, ?, ?) " +
-                "ON CONFLICT (product_reference) DO UPDATE " +
-                "SET total_margin = product_margin.total_margin + ? " +
-                "WHERE product_margin.product_reference = ?";
-            jdbcTemplate.update(upsertSQL, productReference, productName, marginToAdd, marginToAdd, productReference);
-    }
-```
-*check the postegres documentation on [upsert statments](http://www.postgresqltutorial.com/postgresql-upsert/)* 
+## Remaining design issues with async
 
-### Inconsistency due to different transactional contexts
-What will happen if the `product_order` table update fails ? The event has been raised and consumed to update the `product_margin`
-il faut utiliser le AFTER_COMMIT
+### Inconsistency due to distinct transactions
+What will happen if the `product_order` table update fails ? whatever, the event has been raised and consumed by `ProductMarginUpdater`... That means:
+* order is not saved in `product_order`...
+* but `total_margin` has been increased in `product_margin` !
+
+It is impossible de regroup `product_order` and `product_margin` updates in a same transaction, due to async... 
+BUT, we can choose to raise the event only if the `product_order` update commit succeed. To apply that strategy, annotate the `onOrderSavedEvent()` method  with `@TransactionalEventListener` instead of `@EventListener`. 
+This will invoke the listener callback just after the commit of transaction made by the publisher: 
+````
+@Service
+public class ProductMarginUpdater {
+ 
+    @Async
+    @Transactional
+    @TransactionalEventListener(phase = AFTER_COMMIT)
+    public void onOrderSavedEvent(OrderSavedEvent orderSavedEvent) {
+       ...
+    }
+}
+````
+N.B.; `@TransactionalEventListener` means the callback invocation depends on the *publisher* transaction state. The `@Transactional` means the *subscriber* callback will occur in a new transaction...
+
 
 ### Inconsistency due to event disordering
 use 1-thread thread pool

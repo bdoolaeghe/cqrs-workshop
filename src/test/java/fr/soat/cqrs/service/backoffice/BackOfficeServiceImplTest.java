@@ -14,7 +14,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.sql.DataSource;
+import java.sql.Time;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static fr.soat.cqrs.model.order.OrderFixtures.ProductEnum.*;
 import static fr.soat.cqrs.model.order.OrderFixtures.*;
@@ -50,6 +52,7 @@ public class BackOfficeServiceImplTest {
                 two(TSHIRT_BOB_LEPONGE),
                 three(CHAUSSETTES_SPIDERMAN)
                 );
+        TimeUnit.SECONDS.sleep(1); // wait for the async listener action termination....
 
         // When
         BestSales bestSales = backOfficeService.getBestSales();
