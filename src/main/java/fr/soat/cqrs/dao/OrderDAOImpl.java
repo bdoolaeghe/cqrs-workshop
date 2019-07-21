@@ -1,8 +1,10 @@
 package fr.soat.cqrs.dao;
 
+import fr.soat.cqrs.event.OrderSavedEvent;
 import fr.soat.cqrs.model.Order;
 import fr.soat.cqrs.model.OrderLine;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -12,11 +14,13 @@ import java.util.List;
 @Repository
 public class OrderDAOImpl implements OrderDAO {
 
-    JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Autowired
-    public OrderDAOImpl(DataSource dataSource) {
+    public OrderDAOImpl(DataSource dataSource, ApplicationEventPublisher eventPublisher) {
         jdbcTemplate = new JdbcTemplate(dataSource);
+        this.eventPublisher = eventPublisher;
     }
 
     public Order getById(Long orderId) {
@@ -36,8 +40,13 @@ public class OrderDAOImpl implements OrderDAO {
 
     @Override
     public Long insert(Order order) {
+        // save
         Long orderId = insertOrder(order);
+        order.setId(orderId);
         insertLines(orderId, order.getLines());
+
+        // notiffy
+        eventPublisher.publishEvent(new OrderSavedEvent(order));
         return orderId;
     }
 
