@@ -35,10 +35,7 @@ By this way, the subscriber will be invoked in a dedicated thread, and won't blo
 ## Test it !
 
 Now the `BackOfficeServiceImplTest` is failing ! Any idea why ? 
-Many issues we have in async world...
-
-### Data are *only* eventually readable in `product_margin` table 
-The first issue we have, is that the `product_margin` is no more consistent with `product_order`: there is a delay to update `product_margin` due to async update from subscriber.
+Many issues we have in async world... Data are *only* eventually readable in `product_margin` table.`product_margin` is no more strongly consistent with `product_order`: there is a delay to update `product_margin` due to async update from subscriber.
 In the test context, the `main` thread running the test, is saving the `product_order`, and then check the `getBestSales()`... But the subscriber thread may have not finished to update the `product_margin` table yet !!!
 A "simple" fix could be to sleep a while in the test, before calling the `getBestSales()`:
 ```
