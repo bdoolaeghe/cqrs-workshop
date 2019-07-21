@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public class OrderDAOImpl implements OrderDAO {
 
-    JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     @Autowired
     public OrderDAOImpl(DataSource dataSource) {
@@ -36,8 +36,12 @@ public class OrderDAOImpl implements OrderDAO {
 
     @Override
     public Long insert(Order order) {
+        // save
         Long orderId = insertOrder(order);
         insertLines(orderId, order.getLines());
+
+        // notify
+        //FIXME publish an OrderSavedEvent
         return orderId;
     }
 

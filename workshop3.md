@@ -7,27 +7,30 @@ Enhance the previous workshop2 getBestSales() CQRS solution to avoid service cou
 As a simple solution, we'll use the [spring rfamework event bus](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/ApplicationEventPublisher.html) implementation.
 
 ### Publish event when write model is updated
-In the `FrontServiceImpl`, autowire the `ApplicationEventPublisher` spring bean :
+In the `OrderDAOIMpl`, autowire the `ApplicationEventPublisher` spring bean :
 ```
 @Service
-public class FrontServiceImpl implements FrontService {
+public class OrderDAOImpl implements ORderDAO {
     ...
     @Autowired
     private final ApplicationEventPublisher eventPublisher;
     ...
 }
 ```
-Now, the goal is to publish an event after having saved the order in DB in the `FrontServiceImpl.order()`. 
+Now, the goal is to publish an event after having saved the order in DB. 
 * create an event class `OrderSavedEvent`, containing the saved order.
 * publish an instance of `OrderSavedEvent` :
 ```
     @Override
-    @Transactional
-    public Long order(Order order) {
-        // save order in product_order
-        Long inserted = orderDAO.insert(order);
-        // publish an OrderSavedEvent
-        ...
+    public Long insert(Order order) {
+        // save
+        Long orderId = insertOrder(order);
+        order.setId(orderId);
+        insertLines(orderId, order.getLines());
+
+        // notiffy
+        eventPublisher.publishEvent(new OrderSavedEvent(order));
+        return orderId;
     }
 ```
 *You can check this [tutorial](https://www.baeldung.com/spring-events#publisher) for more details.*
