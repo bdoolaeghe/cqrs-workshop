@@ -28,6 +28,7 @@ public class ProductMarginUpdater {
         this.productMarginDAO = productMarginDAO;
     }
 
+    //FIXME make me asynchronous
     @EventListener
     public void onOrderSavedEvent(OrderSavedEvent orderSavedEvent) {
         log.info("Received " + orderSavedEvent);
