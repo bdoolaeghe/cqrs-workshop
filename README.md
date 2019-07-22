@@ -1,32 +1,13 @@
 # Workshop CQRS
 
-Un workshop d'initiation à CQRS
+An initiation workshop about [CQRS](https://martinfowler.com/bliki/CQRS.html)
 
 * [How To / FAQ](HOWTO.md)
-* [workshop 1: introduction](workshop1.md) 
+* [workshop 1: introduction](blob/workshop1/workshop1.md) 
+* [workshop 2: a simple CQRS implementation](blob/workshop2/workshop2.md)
+* [workshop 3: a CQRS implementation using event bus](blob/workshop3/workshop3.md)
+* [workshop 4: a CQRS implementation using async event bus](blob/workshop4/workshop4.md)
+* [workshop 5: async event bus and consistency issues](blob/workshop5/workshop5.md)
+* [workshop 6: async event bus and event order](blob/workshop6/workshop6.md)
+* [workshop 7: async event bus with message brokers ](blob/workshop7/workshop7.md)
 
-TODO
-====
-cf [trello](https://trello.com/b/QlNUNO3K/formation-cqrs-es)
-
-* monter une DB
-* schema.sql
-* script d'alim de produits
-* docker-compose.yml qui start une base + cree schema + feed produits
-
-SANS CQRS
-=========
-* service java d'enregistrement d'une commande (FO client)
-* service de consultation d'une commande (BO preparateurs)
-* service de lecture des meilleures ventes (BO BI)
-
-scenario de test:
-* given j'ai passé 3 orders (order = commande, sans ambiguité)
-* when je passe une commande de 1000 x chaussettes
-* Then chaussettes devient meilleure vente
-
-AVEC CQRS
-=========
-* intro d'un command handler
-* update le service d'enregistrement de commande
-* update service de lecteur des meilleures ventes
