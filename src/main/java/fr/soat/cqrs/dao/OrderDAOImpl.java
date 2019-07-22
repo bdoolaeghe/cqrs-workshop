@@ -23,6 +23,18 @@ public class OrderDAOImpl implements OrderDAO {
         this.eventPublisher = eventPublisher;
     }
 
+    public List<Order> getOrders() {
+        return jdbcTemplate.query(
+                "select product_order.id as order_id, " +
+                        "order_line.id as line_id, " +
+                        "order_line.reference, " +
+                        "order_line.quantity " +
+                        "from product_order inner join order_line " +
+                        "on order_line.order_id = product_order.id",
+                new Object[0],
+                new OrderMapper());
+    }
+
     public Order getById(Long orderId) {
         String sql = "select product_order.id as order_id, " +
                 "order_line.id as line_id, " +
