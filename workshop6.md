@@ -8,7 +8,7 @@ Guarantee the event consumption order (same as publish order)
 First, we want to implement the new feature `FrontService.cancelOrder(orderId)`, to cancel a previously saved order.
 This service should:
 * delete the order from `product_order` and each order line in `order_line` for the corresponding order
-* update `product_margin` read model, to remove the cancelled order margin.
+* update `product_inventory`, to reincrease the remaining quantity
 
 Implement the service `FrontService.cancelOrder()` and `OrderDAO.delete(orderiD)`. This DAO method should raise a `OrderDeletedEvent`, that a new event listener method `onDeletedOrderEvent()` should handle in `ProductMarginUpdater`, to update `product_margin` and decrease the order corresponding margins.
 Once implemented, `BackOfficeServiceImplTest.should_decrease_product_margin_when_cancelling_an_order()` should pass green.
@@ -55,3 +55,5 @@ public class ProductMarginUpdater {
 ```
 
 Check now `BackOfficeServiceImplTest.should_successfully_order_then_cancel_and_get_consistent_product_margins()` pass green.
+
+*N.B.: check this [tutorial](https://www.baeldung.com/spring-async#override-the-executor-at-the-method-level) for more details about executing `@Async` method on dedicated thread pool*

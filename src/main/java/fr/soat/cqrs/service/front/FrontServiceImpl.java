@@ -37,14 +37,13 @@ public class FrontServiceImpl implements FrontService {
     @Override
     @Transactional
     public void cancelOrder(Long orderId) {
-        // delete order from product_order
-        Order order = orderDAO.getById(orderId);
-        orderDAO.delete(orderId);
+        // delete order from product_order / order_line
+        //FIXME invoke OrderDao to delete from product_order and order_line
 
         // update inventory
-        for(OrderLine line : order.getLines()) {
-            productInventoryDAO.increaseProductInventory(line.getProductReference(), line.getQuantity());
-        }
+        //FIXME increase the product_inventory for cancelled order products
+
+        throw new RuntimeException("implement me !");
     }
 
 }
