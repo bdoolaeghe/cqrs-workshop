@@ -27,7 +27,7 @@ CREATE TABLE product_margin
 (
     product_reference INTEGER PRIMARY KEY,
     product_name      text,
-    total_margin      FLOAT
+    total_margin      FLOAT CHECK (total_margin >= 0)
 );
 
 CREATE TABLE product_inventory
