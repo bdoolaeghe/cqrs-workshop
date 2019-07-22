@@ -4,6 +4,7 @@ import fr.soat.cqrs.model.BestSales;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import javax.sql.DataSource;
 
@@ -19,14 +20,17 @@ public class ProductMarginDAOImpl implements ProductMarginDAO {
 
     @Override
     public BestSales getBestSales() {
-        return jdbcTemplate.queryForObject(
-                "SELECT product_name, " +
-                        " total_margin as product_margin " +
-                        "FROM product_margin " +
-                        "ORDER BY total_margin DESC " +
-                        "LIMIT 3",
-                new Object[0], new BestSalesMapper());
-    }
+        try {
+            return jdbcTemplate.queryForObject(
+                    "SELECT product_name, " +
+                            " total_margin as product_margin " +
+                            "FROM product_margin " +
+                            "ORDER BY total_margin DESC " +
+                            "LIMIT 3",
+                    new Object[0], new BestSalesMapper());
+        } catch (EmptyResultDataAccessException e) {
+            return new BestSales();
+        }    }
 
     @Override
     public void incrementProductMargin(Long productReference, String productName, float marginToAdd) {
