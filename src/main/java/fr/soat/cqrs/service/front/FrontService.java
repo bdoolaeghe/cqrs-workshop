@@ -6,4 +6,6 @@ public interface FrontService {
 
     Long order(Order order);
 
+    void cancelOrder(Long orderId);
+
 }

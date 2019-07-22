@@ -37,7 +37,7 @@ public class ProductInventoryDAOImpl implements ProductInventoryDAO {
         } catch (DataIntegrityViolationException e) {
             // if too many bought quantity regarding to the remaining stock
             if (e.getMessage().contains("product_inventory_quantity_check"))  {
-                throw new InventoryException("Stock too low  for product " + productReference);
+                throw new InventoryException("Stock too low for product " + productReference);
             }
         }
 

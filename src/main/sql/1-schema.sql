@@ -33,7 +33,7 @@ CREATE TABLE product_margin
 CREATE TABLE product_inventory
 (
     product_reference INTEGER PRIMARY KEY,
-    quantity      INTEGER CHECK (quantity > 0)
+    quantity      INTEGER CHECK (quantity >= 0)
 );
 
 

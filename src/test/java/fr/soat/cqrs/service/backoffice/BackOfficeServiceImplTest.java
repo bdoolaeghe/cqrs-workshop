@@ -21,8 +21,7 @@ import java.util.concurrent.TimeUnit;
 
 import static fr.soat.cqrs.model.order.OrderFixtures.ProductEnum.*;
 import static fr.soat.cqrs.model.order.OrderFixtures.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = AppConfig.class)
@@ -95,6 +94,41 @@ public class BackOfficeServiceImplTest {
                 .isEqualTo(0);
     }
 
+
+    @Test
+    public void should_decrease_product_margin_when_cancelling_an_order() throws InterruptedException {
+        // Given
+        productInventoryDAO.increaseProductInventory(TSHIRT_BOB_LEPONGE.reference, 1);
+        productInventoryDAO.increaseProductInventory(ROBE_REINE_DES_NEIGES.reference, 2);
+
+        // When
+        Long orderId = somebodyOrders(
+                one(TSHIRT_BOB_LEPONGE),
+                two(ROBE_REINE_DES_NEIGES)
+        );
+
+        // Then
+        waitAWhile();
+        BestSales bestSales = backOfficeService.getBestSales();
+        assertThat(firstProduct(bestSales)).isEqualTo(TSHIRT_BOB_LEPONGE.name);
+        assertThat(secondProduct(bestSales)).isEqualTo(ROBE_REINE_DES_NEIGES.name);
+
+        // When
+        somebodyCancelOrders(orderId);
+
+        // Then
+        waitAWhile();
+        bestSales = backOfficeService.getBestSales();
+        assertThat(bestSales.getSales())
+                .extracting(sales -> tuple(sales.getProductName(), sales.getProductMargin()))
+                .containsExactlyInAnyOrder(
+                        tuple(TSHIRT_BOB_LEPONGE.name, 0f),
+                        tuple(ROBE_REINE_DES_NEIGES.name, 0f)
+                );
+    }
+
+
+
     private void waitAWhile() throws InterruptedException {
         TimeUnit.SECONDS.sleep(1);
     }
@@ -102,6 +136,10 @@ public class BackOfficeServiceImplTest {
     private Long somebodyOrders(List... orderDescription) {
         Order order = OrderFixtures.buildOrder(orderDescription);
         return frontService.order(order);
+    }
+
+    private void somebodyCancelOrders(Long orderId) {
+        frontService.cancelOrder(orderId);
     }
 
     public String firstProduct(BestSales bestSales) {
@@ -115,6 +153,5 @@ public class BackOfficeServiceImplTest {
     public String tThirdProduct(BestSales bestSales) {
         return bestSales.getSales().get(2).getProductName();
     }
-
 
 }

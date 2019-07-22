@@ -11,4 +11,6 @@ public interface OrderDAO {
     Order getById(Long orderId);
 
     Long insert(Order order);
+
+    void delete(Long orderId);
 }

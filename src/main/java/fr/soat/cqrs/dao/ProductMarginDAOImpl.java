@@ -2,6 +2,7 @@ package fr.soat.cqrs.dao;
 
 import fr.soat.cqrs.model.BestSales;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -42,6 +43,25 @@ public class ProductMarginDAOImpl implements ProductMarginDAO {
                 "SET total_margin = product_margin.total_margin + ? " +
                 "WHERE product_margin.product_reference = ?";
         jdbcTemplate.update(upsertSQL, productReference, productName, marginToAdd, marginToAdd, productReference);
+    }
+
+    @Override
+    public void decrementProductMargin(Long productReference, String productName, float marginToRemove) {
+        String upsertSQL = "UPDATE product_margin SET total_margin = product_margin.total_margin - ? WHERE product_reference = ?";
+        int update = 0;
+        try {
+            update = jdbcTemplate.update(upsertSQL, marginToRemove, productReference);
+        } catch (DataIntegrityViolationException e) {
+            // if margin becomes < 0
+            if (e.getMessage().contains("product_margin_total_margin_check"))  {
+                throw new ProductMarginException("Negative total margin for product " + productReference);
+            }
+        }
+
+        // if had never stocked the product
+        if (update == 0) {
+            throw new ProductMarginException("No total margin for product " + productReference);
+        }
     }
 }
 
