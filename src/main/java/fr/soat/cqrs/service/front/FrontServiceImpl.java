@@ -1,7 +1,9 @@
 package fr.soat.cqrs.service.front;
 
 import fr.soat.cqrs.dao.OrderDAO;
+import fr.soat.cqrs.dao.ProductInventoryDAO;
 import fr.soat.cqrs.model.Order;
+import fr.soat.cqrs.model.OrderLine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,17 +12,26 @@ import org.springframework.transaction.annotation.Transactional;
 public class FrontServiceImpl implements FrontService {
 
     private final OrderDAO orderDAO;
+    private final ProductInventoryDAO productInventoryDAO;
 
     @Autowired
-    public FrontServiceImpl(OrderDAO orderDAO) {
+    public FrontServiceImpl(OrderDAO orderDAO, ProductInventoryDAO productInventoryDAO) {
         this.orderDAO = orderDAO;
+        this.productInventoryDAO = productInventoryDAO;
     }
 
     @Override
     @Transactional
     public Long order(Order order) {
         // save order in product_order
-        return orderDAO.insert(order);
+        Long orderId = orderDAO.insert(order);
+
+        // update inventory
+        for(OrderLine line : order.getLines()) {
+            productInventoryDAO.decreaseProductInventory(line.getProductReference(), line.getQuantity());
+        }
+
+        return orderId;
     }
 
 }

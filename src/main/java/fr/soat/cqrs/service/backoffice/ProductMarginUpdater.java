@@ -7,11 +7,9 @@ import fr.soat.cqrs.model.Order;
 import fr.soat.cqrs.model.OrderLine;
 import fr.soat.cqrs.model.Product;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import static org.springframework.transaction.event.TransactionPhase.AFTER_COMMIT;
@@ -30,7 +28,7 @@ public class ProductMarginUpdater {
 
     @Async
     @Transactional
-    @EventListener
+    @TransactionalEventListener(phase = AFTER_COMMIT)
     public void onOrderSavedEvent(OrderSavedEvent orderSavedEvent) {
         log.info("Received " + orderSavedEvent);
         Order order  = orderSavedEvent.getOrder();
