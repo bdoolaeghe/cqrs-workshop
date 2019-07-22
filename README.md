@@ -3,7 +3,9 @@
 An initiation workshop about [CQRS](https://martinfowler.com/bliki/CQRS.html)
 
 ## Read before start
-* [How To / FAQ](HOWTO.md)
+* Each workshop is on git branch. Checkout the corresponding branch to get the code base for a given workshop.
+* Each workshop has a solution branch (e.g. [workshop1_solution](https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/blob/workshop1_solution) for solution of [workshop1](https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/blob/workshop1))
+* Have a look to the [How To / FAQ](HOWTO.md)
 
 ## Training
 * [workshop 1: introduction](https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/blob/workshop1/workshop1.md) 
