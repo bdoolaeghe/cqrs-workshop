@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 @Configuration
 @ComponentScan("fr.soat.cqrs")
@@ -44,5 +46,10 @@ public class AppConfig {
     @Bean
     public PlatformTransactionManager transactionManager(DataSource datasource) throws SQLException {
         return new DataSourceTransactionManager(datasource);
+    }
+
+    @Bean
+    public Executor productMarginUpdaterThreadPool() {
+        return Executors.newFixedThreadPool(1, task -> new Thread(task, "product-margin-updater-thread"));
     }
 }

@@ -127,6 +127,34 @@ public class BackOfficeServiceImplTest {
                 );
     }
 
+    @Test
+    public void should_successfully_order_then_cancel_and_get_consistent_product_margins() throws InterruptedException {
+        // Given
+        productInventoryDAO.increaseProductInventory(TSHIRT_BOB_LEPONGE.reference, 1);
+        productInventoryDAO.increaseProductInventory(ROBE_REINE_DES_NEIGES.reference, 2);
+
+        // When
+        for (int i = 0 ; i < 100 ; i++) {
+            // save new order
+            Long orderId = somebodyOrders(
+                    one(TSHIRT_BOB_LEPONGE),
+                    two(ROBE_REINE_DES_NEIGES)
+            );
+
+            // cancel order
+            somebodyCancelOrders(orderId);
+        }
+
+        waitAWhile();
+        BestSales bestSales = backOfficeService.getBestSales();
+        assertThat(bestSales.getSales())
+                .extracting(sales -> tuple(sales.getProductName(), sales.getProductMargin()))
+                .containsExactlyInAnyOrder(
+                        tuple(TSHIRT_BOB_LEPONGE.name, 0f),
+                        tuple(ROBE_REINE_DES_NEIGES.name, 0f)
+                );
+    }
+
 
 
     private void waitAWhile() throws InterruptedException {
