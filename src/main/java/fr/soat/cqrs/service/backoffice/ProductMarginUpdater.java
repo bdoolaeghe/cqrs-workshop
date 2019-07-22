@@ -27,7 +27,7 @@ public class ProductMarginUpdater {
         this.productMarginDAO = productMarginDAO;
     }
 
-    @Async
+    @Async("productMarginUpdaterThreadPool")
     @Transactional
     @TransactionalEventListener(phase = AFTER_COMMIT)
     public void onOrderSavedEvent(OrderSavedEvent orderSavedEvent) {
@@ -46,7 +46,7 @@ public class ProductMarginUpdater {
         }
     }
 
-    @Async
+    @Async("productMarginUpdaterThreadPool")
     @Transactional
     @TransactionalEventListener(phase = AFTER_COMMIT)
     public void onOrderDeletedEvent(OrderDeletedEvent orderDeletedEvent) {
