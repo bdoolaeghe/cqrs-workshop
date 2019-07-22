@@ -30,7 +30,8 @@ public class ProductMarginDAOImpl implements ProductMarginDAO {
                     new Object[0], new BestSalesMapper());
         } catch (EmptyResultDataAccessException e) {
             return new BestSales();
-        }    }
+        }
+    }
 
     @Override
     public void incrementProductMargin(Long productReference, String productName, float marginToAdd) {
