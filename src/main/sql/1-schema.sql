@@ -30,10 +30,4 @@ CREATE TABLE product_margin
     total_margin      FLOAT CHECK (total_margin >= 0)
 );
 
-CREATE TABLE order_event
-(
-    event_id            SERIAL PRIMARY KEY,
-    event_type          TEXT NOT NULL,
-    product_order       TEXT NOT NULL
-);
 

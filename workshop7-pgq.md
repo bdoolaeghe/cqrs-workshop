@@ -82,9 +82,7 @@ public class ProductMarginUpdater {
         
 }
 ```
-*N.B.: `consumePendingOrderEvents()` is `@Transactional` decorated, because it should do in the same transaction:*
-1. *update `product_margin` table when polling through `OrderEventDAO.poll()`*
-2. *update `order_event` table through `ProductMarginDAO` as we previously did with an `@EventListener`*
+*N.B.: `consumePendingOrderEvents()` is `@Transactional` decorated, because it should update `product_margin` and `order_event` in the same transaction.*
 
 Don't forget to activate spring `@Scheduled` feature in `AppConfig`:
 ```
@@ -94,15 +92,17 @@ public class AppConfig {
 }
 ```
 
-*N.B.: check the quick [tutorial about @Scheduled](https://www.baeldung.com/spring-scheduled-tasks) for more details about spring scheduling.*
+*N.B.: check the quick [tutorial about @Scheduled](https://www.baeldung.com/spring-scheduled-tasks) if you need more details about spring scheduling.*
  
  ##### consume events in Daemon
-Then, you should implement `ProductMarginUpdater.consumePendingOrderEvents()`. Consume an event means (in a same transaction): 
+Then, you should implement `ProductMarginUpdater.consumePendingOrderEvents()`. It should (in a same transaction): 
 * poll the table `order_event` with method `OrderEventDAO.pollOrderEvent()` (remember this method remove and return the first row in one DB query)
 * consume the event, by delegating to `onOrderDeletedEvent()` or `onOrderSavedEvent()`, depending on the type of the event (`order_event.event_type`) 
-* poll again the table `order_event`, until we can find any pending event no more.
+* repeat the polling again, until we can find any pending event no more in `order_event`.
 
 *N.B.: this is a simple poller implementation. You may have some enhancement in mind ?*
+
+*Once implemented, the test `BackOfficeServiceImplTest` pass green !*
 
 ### A good solution ?
 

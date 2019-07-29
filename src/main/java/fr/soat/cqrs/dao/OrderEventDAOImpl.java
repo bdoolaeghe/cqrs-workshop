@@ -22,20 +22,13 @@ public class OrderEventDAOImpl implements OrderEventDAO {
 
     @Override
     public void push(OrderEvent event) {
-        String sql = "INSERT INTO order_event (event_type, product_order) " +
-                "VALUES (?,?)";
-        jdbcTemplate.update(sql, event.getClass().getSimpleName(), OrderJsonMapper.toJason(event.getOrder()));
+        // FIXME save event in order_event table !
+        throw new RuntimeException("implement me !");
     }
 
     @Override
     public Optional<OrderEvent> pop() {
-        String sql = "DELETE FROM order_event " +
-                "WHERE event_id = (SELECT MIN(event_id) FROM order_event) " +
-                "RETURNING event_id, event_type, product_order";
-        try {
-            return Optional.of(jdbcTemplate.queryForObject(sql, ORDER_EVENT_MAPPER));
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
+        // FIXME retrieve event from order_event table !
+        throw new RuntimeException("implement me !");
     }
 }

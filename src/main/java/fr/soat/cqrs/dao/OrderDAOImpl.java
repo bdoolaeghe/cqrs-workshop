@@ -1,7 +1,5 @@
 package fr.soat.cqrs.dao;
 
-import fr.soat.cqrs.event.OrderDeletedEvent;
-import fr.soat.cqrs.event.OrderSavedEvent;
 import fr.soat.cqrs.model.Order;
 import fr.soat.cqrs.model.OrderLine;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,8 +44,9 @@ public class OrderDAOImpl implements OrderDAO {
         insertLines(orderId, order.getLines());
 
         // push event
-        orderEventDAO.push(new OrderSavedEvent(order));
-        return orderId;
+        // FIXME publish an order event with OrderEventDAO !
+        throw new RuntimeException("implement me !");
+//        return orderId;
     }
 
     private Long insertOrder(Order order) {
@@ -74,7 +73,8 @@ public class OrderDAOImpl implements OrderDAO {
         jdbcTemplate.update("DELETE FROM product_order WHERE id = ?", orderId);
 
         // push event
-        orderEventDAO.push(new OrderDeletedEvent(order));
+        // FIXME publish an order event with OrderEventDAO !
+        throw new RuntimeException("implement me !");
     }
 
 }
