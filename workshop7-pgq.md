@@ -47,6 +47,7 @@ public interface OrderEventDAO {
 }
 ```
 This DAO can be seen as a persistent *Queue*, with 2 basics operation (*push* = put in queue, *pop* = retrieve from queue)
+
 *Hint: you can use the following SQL queries:*
 * push a new order (enqueue an event):
 ```
