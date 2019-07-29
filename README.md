@@ -14,5 +14,5 @@ An initiation workshop about [CQRS](https://martinfowler.com/bliki/CQRS.html)
 * [workshop 4: a CQRS implementation using async event bus](https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/blob/workshop4/workshop4.md)
 * [workshop 5: async event bus and consistency issues](https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/blob/workshop5/workshop5.md)
 * [workshop 6: async event bus and event order](https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/blob/workshop6/workshop6.md)
-
+* [workshop 7: async event subscriber with persisted events](https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/blob/workshop7/workshop7-pgq.md)
 
