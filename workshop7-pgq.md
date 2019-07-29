@@ -9,9 +9,9 @@ Guarantee consistency with persisting events.
 The previous solution with `@TransactionalEventListener(phase = AFTER_COMMIT)` is quite good, but has some remaining inconsistency issues: 
 what would happen in the following scenario:
 * the publisher save an order, and commit in the `product_order` table.
-* the commit triggers the consumption of an `OrderSavedEvent` by the `ProductMarginUpdater` event listener.
+* the COMMIT triggers the call of `ProductMarginUpdater.onOrderSavedEvent()` method.
 * however, the event listener fails to consume the event (maybe because of a DB Connection lost, or an `OutOtMemoryError`)
-The event is considered as "acknowledged", but the database is now inconsistent, and there is nothing to "repair" the data !
+The order has been saved and commited in `product_order`, but the new total margin has not been saved in `product_margin` ! Indeed, the event has not been successfully consumed, but now is lost... As a consequence, the Database is now inconsistant !
 
 ## A solution
 To keep consistency, a solution is to make "atomic" the data update in DB and event acknowledge. 
