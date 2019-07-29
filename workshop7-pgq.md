@@ -102,7 +102,7 @@ Then, you should implement `ProductMarginUpdater.consumePendingOrderEvents()`. C
 * consume the event, by delegating to `onOrderDeletedEvent()` or `onOrderSavedEvent()`, depending on the type of the event (`order_event.event_type`) 
 * poll again the table `order_event`, until we can find any pending event no more.
 
-*N.B.: this is a simple poller implementation. You may have some enhancement in mind ? 
+*N.B.: this is a simple poller implementation. You may have some enhancement in mind ?*
 
 ### A good solution ?
 
