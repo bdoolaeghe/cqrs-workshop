@@ -63,10 +63,10 @@ RETURNING event_id, event_type, product_order;
 *N.B.: your DAO implement should make test `OrderEventDAOImplTest` pass green !*
 
 #### Amend OrderDAOImpl
-Fix the `OrderDAOImpl` methods writing in `product_order` to also publish an event with `OrderEventDAO.push()`in the same transaction.
+Fix the `OrderDAOImpl` methods writing in `product_order` to also publish an event with `OrderEventDAO.push()` in the same transaction.
 
 #### Amend ProductMarginUpdater
-##### Create a Daemon consumer 
+##### Create a consumer Daemon
 `ProductMarginUpdater` is no more an `@EventListener` spring managed event listener. That's why We need now to make it a *Daemon*, regularly polling `order_event` for pending events to consume.
 An easy way to create a *Daemon* is to use the spring `@Scheduled` annotation on `ProductMarginUpdater`:
 ```
