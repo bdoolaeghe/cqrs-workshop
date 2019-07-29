@@ -26,8 +26,14 @@ ALTER SEQUENCE order_line_id_seq RESTART WITH 1001;
 CREATE TABLE product_margin
 (
     product_reference INTEGER PRIMARY KEY,
-    product_name      text,
+    product_name      TEXT,
     total_margin      FLOAT CHECK (total_margin >= 0)
 );
 
+CREATE TABLE order_event
+(
+    event_id            SERIAL PRIMARY KEY,
+    event_type          TEXT NOT NULL,
+    product_order       TEXT NOT NULL
+);
 

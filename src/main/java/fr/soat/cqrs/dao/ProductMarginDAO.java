@@ -7,4 +7,6 @@ public interface ProductMarginDAO {
     BestSales getBestSales();
 
     void incrementProductMargin(Long productReference, String productName, float marginToAdd);
+
+    void decrementProductMargin(Long productReference, String productName, float marginToRemove) ;
 }

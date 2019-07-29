@@ -15,10 +15,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static fr.soat.cqrs.model.order.OrderFixtures.ProductEnum.*;
 import static fr.soat.cqrs.model.order.OrderFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = AppConfig.class)
@@ -60,9 +62,72 @@ public class BackOfficeServiceImplTest {
         assertThat(tThirdProduct(bestSales)).isEqualTo(CHAUSSETTES_SPIDERMAN.name);
     }
 
-    private void somebodyOrders(List... orderDescription) {
+    @Test
+    public void should_decrease_product_margin_when_cancelling_an_order() throws InterruptedException {
+        // When
+        Long orderId = somebodyOrders(
+                one(TSHIRT_BOB_LEPONGE),
+                two(ROBE_REINE_DES_NEIGES)
+        );
+
+        // Then
+        waitAWhile();
+        BestSales bestSales = backOfficeService.getBestSales();
+        assertThat(firstProduct(bestSales)).isEqualTo(TSHIRT_BOB_LEPONGE.name);
+        assertThat(secondProduct(bestSales)).isEqualTo(ROBE_REINE_DES_NEIGES.name);
+
+        // When
+        somebodyCancelOrders(orderId);
+
+        // Then
+        waitAWhile();
+        bestSales = backOfficeService.getBestSales();
+        assertThat(bestSales.getSales())
+                .extracting(sales -> tuple(sales.getProductName(), sales.getProductMargin()))
+                .containsExactlyInAnyOrder(
+                        tuple(TSHIRT_BOB_LEPONGE.name, 0f),
+                        tuple(ROBE_REINE_DES_NEIGES.name, 0f)
+                );
+    }
+
+    @Test
+    public void should_successfully_order_then_cancel_and_get_consistent_product_margins() throws InterruptedException {
+        // When
+        for (int i = 0 ; i < 100 ; i++) {
+            // save new order
+            Long orderId = somebodyOrders(
+                    one(TSHIRT_BOB_LEPONGE),
+                    two(ROBE_REINE_DES_NEIGES)
+            );
+
+            // cancel order
+            somebodyCancelOrders(orderId);
+        }
+
+        waitAWhile();
+        BestSales bestSales = backOfficeService.getBestSales();
+        assertThat(bestSales.getSales())
+                .extracting(sales -> tuple(sales.getProductName(), sales.getProductMargin()))
+                .containsExactlyInAnyOrder(
+                        tuple(TSHIRT_BOB_LEPONGE.name, 0f),
+                        tuple(ROBE_REINE_DES_NEIGES.name, 0f)
+                );
+    }
+
+
+
+
+    private void waitAWhile() throws InterruptedException {
+        TimeUnit.SECONDS.sleep(1);
+    }
+
+    private Long somebodyOrders(List... orderDescription) {
         Order order = OrderFixtures.buildOrder(orderDescription);
-        frontService.order(order);
+        return frontService.order(order);
+    }
+
+    private void somebodyCancelOrders(Long orderId) {
+        frontService.cancelOrder(orderId);
     }
 
     public String firstProduct(BestSales bestSales) {
@@ -76,6 +141,5 @@ public class BackOfficeServiceImplTest {
     public String tThirdProduct(BestSales bestSales) {
         return bestSales.getSales().get(2).getProductName();
     }
-
 
 }
