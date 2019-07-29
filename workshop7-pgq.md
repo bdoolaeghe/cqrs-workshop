@@ -10,14 +10,14 @@ The previous solution with `@TransactionalEventListener(phase = AFTER_COMMIT)` i
 what would happen in the following scenario:
 * the publisher save an order, and commit in the `product_order` table.
 * the COMMIT triggers the call of `ProductMarginUpdater.onOrderSavedEvent()` method.
-* however, the event listener fails to consume the event (maybe because of a DB Connection lost, or an `OutOtMemoryError`)
+* however, the event listener fails to consume the event (maybe because of a DB Connection lost, or an `OutOtMemoryError`).
 The order has been saved and commited in `product_order`, but the new total margin has not been saved in `product_margin` ! Indeed, the event has not been successfully consumed, but now is lost... As a consequence, the Database is now inconsistant !
 
 ## A solution
-To keep consistency, a solution is to make "atomic" the data update in DB and event acknowledge. 
-One way of doing that is to use DB transactions:
-* publisher side, save the `product_order` update and corresponding `OrderSavedEvent` event in a same DB transaction.
-* consumer side, save the `product_margin` update and  corresponding `OrderSavedEvent` event acknowledgement in a same DB transaction.
+To keep consistency, a solution is to make "atomic" the state change in DB, and the event consumption. 
+One way of doing that is to use a DB transaction:
+* publisher side, we should persist the `product_order` update AND the corresponding `OrderSavedEvent` event in DB in a same DB transaction.
+* consumer side, we must save the `product_margin` update AND corresponding `OrderSavedEvent` event acknowledgement in a same DB transaction.
 That way, the event and `product_margin` "state" keeps consistent ! 
 
 ### Implementation
@@ -32,6 +32,10 @@ CREATE TABLE order_event
 );
 ```
 *N.B.: the `product_order` column will contain a json serialized view of the `Order` object. You can use the `OrderJsonMapper` to ser/deser an `Order` in json*
+
+* to "publish" an event, insert a row in `order_event` representing the published event (a pending event we don't want to loose, not consumed yet). You can shutdown, or even make crash the application, the unconsumed events will not be lost any more.
+* to "acknoledge" (that is, "mark" as consumed) a pending event, just DELETE the row.
+These 2 operations can be wrapped in a transaction.
 
 #### OrderEventDAO
 
