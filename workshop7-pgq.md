@@ -6,7 +6,7 @@ Guarantee consistency with persisting events.
 
 ## The problem
 
-The previous solution is quite good, but has some remaining inconsistency issues: 
+The previous solution with `@TransactionalEventListener(phase = AFTER_COMMIT)` is quite good, but has some remaining inconsistency issues: 
 what would happen in the following scenario:
 * the publisher save an order, and commit in the `product_order` table.
 * the commit triggers the consumption of an `OrderSavedEvent` by the `ProductMarginUpdater` event listener.
