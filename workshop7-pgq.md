@@ -48,7 +48,7 @@ public interface OrderEventDAO {
 INSERT INTO order_event (event_type, product_order)
 VALUES (?,?)
 ```
-* pop the first order (dequeue the first event):
+* pop the first order (dequeue the first event, i.e. remove and return):
 ```
 DELETE FROM order_event
 WHERE event_id = (SELECT MIN(event_id) FROM order_event)
@@ -57,10 +57,46 @@ RETURNING event_id, event_type, product_order;
 *N.B.: your DAO implement should make test `OrderEventDAOImplTest` pass green !
 
 #### Amend OrderDAOImpl
-* save an event when saving/deleting an order in `product_order`
+Fix the `OrderDAOImpl` methods writing in `product_order` to also publish an event with `OrderEventDAO.pushOrderEvent()`in the same transaction.
 
 #### Amend ProductMarginUpdater
-* poll and consume events from `order_event`
+##### Create a Daemon consumer 
+`ProductMarginUpdater` is no more an `@EventListener` spring managed event listener. That's why We need now to make it a *Daemon*, regularly polling `order_event` for pending events to consume.
+An easy way to create a *Daemon* is to use the spring `@Scheduled` annotation on `ProductMarginUpdater`:
+```
+@Service
+public class ProductMarginUpdater {
+    
+    @Transactional
+    @Scheduled(fixedDelay = 100)
+    // invoked by spring in a loop with a delay of 100ms between each iteration
+    public void consumePendingOrderEvents() {
+        //FIXME poll the table order_event and consume events
+    }
+        
+}
+```
+*N.B.: `consumePendingOrderEvents()` is `@Transactional` decorated, because it should do in the same transaction:*
+1. *update `product_margin` table when polling through `OrderEventDAO.pollORderEvent()`*
+2. *update `order_event` table through `ProductMarginDAO` as we previously did with an `@EventListener`*
+
+Don't forget to activate spring `@Scheduled` feature in `AppConfig`:
+```
+@EnableScheduling
+public class AppConfig {
+   ...
+}
+```
+
+*N.B.: check the quick [tutorial about @Scheduled](https://www.baeldung.com/spring-scheduled-tasks) for more details about spring scheduling.*
+ 
+ ##### consume events in Daemon
+Then, you should implement `ProductMarginUpdater.consumePendingOrderEvents()`. Consume an event means (in a same transaction): 
+* poll the table `order_event` with method `OrderEventDAO.pollOrderEvent()` (remember this method remove and return the first row in one DB query)
+* consume the event, by delegating to `onOrderDeletedEvent()` or `onOrderSavedEvent()`, depending on the type of the event (`order_event.event_type`) 
+* poll again the table `order_event`, until we can find any pending event no more.
+
+*N.B.: this is a simple poller implementation. You may have some enhancement in mind ? 
 
 ### A good solution ?
 
@@ -68,9 +104,10 @@ What are the drawbacks/issues ot storing events in a DB table ?
 * issues due to polling strategy
   - workload on DB
   - workload on network
+  - latency due to polling frequency
 * issues due to DB technology
   - volume downgrading performance
-  - need purge of table
+  - need vacuum or purge of table, not very statistics friendly
   - locks issues between read and write
   - hard to scale (#consumers in parallel)
  

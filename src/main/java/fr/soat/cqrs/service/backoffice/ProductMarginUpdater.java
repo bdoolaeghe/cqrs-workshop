@@ -44,7 +44,7 @@ public class ProductMarginUpdater {
 
 
     @Scheduled(fixedDelay = 100)
-    // invoked by spring in a lop with a delay of 100ms between each iteration
+    // invoked by spring in a loop with a delay of 100ms between each iteration
     public void consumePendingOrderEvents() {
         if (enabled.get()) {
             log.info(this.getClass().getSimpleName() + " is polling for pending events...");
