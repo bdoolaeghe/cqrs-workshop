@@ -60,7 +60,7 @@ public class ProductMarginDAOImpl implements ProductMarginDAO {
 
         // if had never stocked the product
         if (update == 0) {
-            throw new ProductMarginException("No total margin for product " + productReference);
+            throw new ProductMarginException("No total margin found for product " + productReference +", can not remove " + marginToRemove + " on a product we never sold yet");
         }
     }
 

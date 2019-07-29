@@ -5,6 +5,7 @@ import fr.soat.cqrs.model.BestSales;
 import fr.soat.cqrs.model.Order;
 import fr.soat.cqrs.model.order.OrderFixtures;
 import fr.soat.cqrs.service.front.FrontService;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,6 +23,7 @@ import static fr.soat.cqrs.model.order.OrderFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
+@Slf4j
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = AppConfig.class)
 public class BackOfficeServiceImplTest {
@@ -32,13 +34,19 @@ public class BackOfficeServiceImplTest {
     private FrontService frontService;
     @Autowired
     private DataSource dataSource;
+    @Autowired
+    private ProductMarginUpdater productMarginUpdater;
 
     @Before
     public void setUp() {
         // We need to clean the DB, because the previous test run commited some data
+        productMarginUpdater.disable();
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         jdbcTemplate.update("TRUNCATE product_margin;");
         jdbcTemplate.update("TRUNCATE product_order CASCADE;");
+        jdbcTemplate.update("TRUNCATE order_event;");
+        log.info("DB cleaned");
+        productMarginUpdater.enable();
     }
 
     @Test
@@ -54,9 +62,11 @@ public class BackOfficeServiceImplTest {
                 );
 
         // When
+        waitAWhile();
         BestSales bestSales = backOfficeService.getBestSales();
 
         // Then
+        assertThat(bestSales.getSales().size()).isEqualTo(3);
         assertThat(firstProduct(bestSales)).isEqualTo(TSHIRT_BOB_LEPONGE.name);
         assertThat(secondProduct(bestSales)).isEqualTo(ROBE_REINE_DES_NEIGES.name);
         assertThat(tThirdProduct(bestSales)).isEqualTo(CHAUSSETTES_SPIDERMAN.name);
@@ -93,7 +103,7 @@ public class BackOfficeServiceImplTest {
     @Test
     public void should_successfully_order_then_cancel_and_get_consistent_product_margins() throws InterruptedException {
         // When
-        for (int i = 0 ; i < 100 ; i++) {
+        for (int i = 0 ; i < 10 ; i++) {
             // save new order
             Long orderId = somebodyOrders(
                     one(TSHIRT_BOB_LEPONGE),
@@ -104,7 +114,7 @@ public class BackOfficeServiceImplTest {
             somebodyCancelOrders(orderId);
         }
 
-        waitAWhile();
+        waitAWhile(3);
         BestSales bestSales = backOfficeService.getBestSales();
         assertThat(bestSales.getSales())
                 .extracting(sales -> tuple(sales.getProductName(), sales.getProductMargin()))
@@ -117,8 +127,16 @@ public class BackOfficeServiceImplTest {
 
 
 
-    private void waitAWhile() throws InterruptedException {
-        TimeUnit.SECONDS.sleep(1);
+    private void waitAWhile(int seconds) {
+        try {
+            TimeUnit.SECONDS.sleep(seconds);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void waitAWhile() {
+        waitAWhile(1);
     }
 
     private Long somebodyOrders(List... orderDescription) {

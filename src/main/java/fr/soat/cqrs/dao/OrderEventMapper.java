@@ -15,11 +15,12 @@ public class OrderEventMapper implements RowMapper<OrderEvent> {
 
     public OrderEvent mapRow(ResultSet resultSet, int i) throws SQLException {
         Order order = fromJson(resultSet.getString("product_order"));
+        Long eventId = resultSet.getLong("event_id");
         String eventType = resultSet.getString("event_type");
         if (OrderDeletedEvent.class.getSimpleName().equals(eventType)) {
-            return new OrderDeletedEvent(order);
+            return new OrderDeletedEvent(eventId, order);
         } else if (OrderSavedEvent.class.getSimpleName().equals(eventType)) {
-            return new OrderSavedEvent(order);
+            return new OrderSavedEvent(eventId, order);
         }
 
         throw new IllegalArgumentException("Unknown event type: " + eventType);

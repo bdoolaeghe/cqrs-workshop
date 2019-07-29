@@ -8,6 +8,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -18,6 +19,7 @@ import java.sql.SQLException;
 @ComponentScan("fr.soat.cqrs")
 @PropertySource("classpath:database.properties")
 @EnableTransactionManagement
+@EnableScheduling
 public class AppConfig {
 
     @Autowired

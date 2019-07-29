@@ -9,8 +9,11 @@ public class OrderEvent {
 
         @Getter
         private final Order order;
+        @Getter
+        private final Long eventId;
 
-        public OrderEvent(Order order) {
+        public OrderEvent(Long eventId, Order order) {
+            this.eventId = eventId;
             this.order = order;
         }
 

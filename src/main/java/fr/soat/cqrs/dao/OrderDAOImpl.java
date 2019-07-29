@@ -5,7 +5,6 @@ import fr.soat.cqrs.event.OrderSavedEvent;
 import fr.soat.cqrs.model.Order;
 import fr.soat.cqrs.model.OrderLine;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -16,12 +15,12 @@ import java.util.List;
 public class OrderDAOImpl implements OrderDAO {
 
     private final JdbcTemplate jdbcTemplate;
-    private final ApplicationEventPublisher eventPublisher;
+    private final OrderEventDAO orderEventDAO;
 
     @Autowired
-    public OrderDAOImpl(DataSource dataSource, ApplicationEventPublisher eventPublisher) {
+    public OrderDAOImpl(DataSource dataSource, OrderEventDAO orderEventDAO) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        this.eventPublisher = eventPublisher;
+        this.orderEventDAO = orderEventDAO;
     }
 
     public Order getById(Long orderId) {
@@ -46,8 +45,8 @@ public class OrderDAOImpl implements OrderDAO {
         order.setId(orderId);
         insertLines(orderId, order.getLines());
 
-        // notiffy
-        eventPublisher.publishEvent(new OrderSavedEvent(order));
+        // publish event
+        orderEventDAO.pushOrderEvent(new OrderSavedEvent(order));
         return orderId;
     }
 
@@ -74,8 +73,8 @@ public class OrderDAOImpl implements OrderDAO {
         jdbcTemplate.update("DELETE FROM order_line WHERE order_id = ?", orderId);
         jdbcTemplate.update("DELETE FROM product_order WHERE id = ?", orderId);
 
-        // notiffy
-        eventPublisher.publishEvent(new OrderDeletedEvent(order));
+        // publish event
+        orderEventDAO.pushOrderEvent(new OrderDeletedEvent(order));
     }
 
 }
