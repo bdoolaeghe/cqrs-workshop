@@ -83,7 +83,7 @@ public class ProductMarginUpdater {
 }
 ```
 *N.B.: `consumePendingOrderEvents()` is `@Transactional` decorated, because it should do in the same transaction:*
-1. *update `product_margin` table when polling through `OrderEventDAO.pollORderEvent()`*
+1. *update `product_margin` table when polling through `OrderEventDAO.poll()`*
 2. *update `order_event` table through `ProductMarginDAO` as we previously did with an `@EventListener`*
 
 Don't forget to activate spring `@Scheduled` feature in `AppConfig`:
