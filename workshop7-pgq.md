@@ -117,5 +117,6 @@ What are the drawbacks/issues ot storing events in a DB table ?
   - locks issues between read and write
   - hard to scale (#consumers in parallel)
  
-Some of these issues could be solved using "Queue" DB objects. cf. for example the Postgres Queues ([PGQ](https://wiki.postgresql.org/wiki/PGQ_Tutorial))
-However, [PGQ](https://wiki.postgresql.org/wiki/PGQ_Tutorial) remains acceptable for "low" volumes applications (i.e. in practice, most of applications ;-))
+Some of these issues could be solved using DB "Queue" objects. Have a look for example to the Postgres Queues ([PGQ](https://wiki.postgresql.org/wiki/PGQ_Tutorial)).
+
+Consider [PGQ](https://wiki.postgresql.org/wiki/PGQ_Tutorial) as an acceptable solution for "low" volumes applications (i.e. in practice, most of applications ;-))
