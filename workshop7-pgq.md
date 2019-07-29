@@ -60,7 +60,7 @@ DELETE FROM order_event
 WHERE event_id = (SELECT MIN(event_id) FROM order_event)
 RETURNING event_id, event_type, product_order;
 ```
-*N.B.: your DAO implement should make test `OrderEventDAOImplTest` pass green !
+*N.B.: your DAO implement should make test `OrderEventDAOImplTest` pass green !*
 
 #### Amend OrderDAOImpl
 Fix the `OrderDAOImpl` methods writing in `product_order` to also publish an event with `OrderEventDAO.push()`in the same transaction.
