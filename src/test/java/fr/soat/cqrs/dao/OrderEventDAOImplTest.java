@@ -52,25 +52,25 @@ public class OrderEventDAOImplTest {
         OrderDeletedEvent fourthEvent = new OrderDeletedEvent(secondOrder);
 
         // When
-        orderEventDAO.pushOrderEvent(firstEvent);
-        orderEventDAO.pushOrderEvent(secondEvent);
-        orderEventDAO.pushOrderEvent(thirdEvent);
-        orderEventDAO.pushOrderEvent(fourthEvent);
+        orderEventDAO.push(firstEvent);
+        orderEventDAO.push(secondEvent);
+        orderEventDAO.push(thirdEvent);
+        orderEventDAO.push(fourthEvent);
 
         // Then
-        OrderEvent firstPopedEvent = orderEventDAO.popOrderEvent().get();
+        OrderEvent firstPopedEvent = orderEventDAO.pop().get();
         assertThat(firstPopedEvent).isInstanceOf(OrderSavedEvent.class);
         assertThat(firstPopedEvent.getOrder()).isEqualTo(firstOrder);
 
-        OrderEvent secondPopedEvent = orderEventDAO.popOrderEvent().get();
+        OrderEvent secondPopedEvent = orderEventDAO.pop().get();
         assertThat(secondPopedEvent).isInstanceOf(OrderSavedEvent.class);
         assertThat(secondPopedEvent.getOrder()).isEqualTo(secondOrder);
 
-        OrderEvent thirdPopedEvent = orderEventDAO.popOrderEvent().get();
+        OrderEvent thirdPopedEvent = orderEventDAO.pop().get();
         assertThat(thirdPopedEvent).isInstanceOf(OrderDeletedEvent.class);
         assertThat(thirdPopedEvent.getOrder()).isEqualTo(firstOrder);
 
-        OrderEvent fourthPopedEvent = orderEventDAO.popOrderEvent().get();
+        OrderEvent fourthPopedEvent = orderEventDAO.pop().get();
         assertThat(fourthPopedEvent).isInstanceOf(OrderDeletedEvent.class);
         assertThat(fourthPopedEvent.getOrder()).isEqualTo(secondOrder);
     }

@@ -48,9 +48,9 @@ public class ProductMarginUpdater {
     public void consumePendingOrderEvents() {
         if (enabled.get()) {
             log.info(this.getClass().getSimpleName() + " is polling for pending events...");
-            Optional<OrderEvent> orderEventMaybe = orderEventDAO.popOrderEvent();
+            Optional<OrderEvent> orderEventMaybe = orderEventDAO.pop();
             while (orderEventMaybe.isPresent()) {
-                log.info(this.getClass().getSimpleName() + " has polled an {} to consume...", orderEventMaybe.get().getClass().getSimpleName());
+                log.info(this.getClass().getSimpleName() + " has polled an {} to pop...", orderEventMaybe.get().getClass().getSimpleName());
                 // poll one by one until there is no more pending events
                 if (orderEventMaybe.get() instanceof OrderSavedEvent) {
                     onOrderSavedEvent((OrderSavedEvent) orderEventMaybe.get());
@@ -59,7 +59,7 @@ public class ProductMarginUpdater {
                 } else {
                     throw new IllegalArgumentException("Unsupported OrderEvent type: " + orderEventMaybe.get().getClass().getSimpleName());
                 }
-                orderEventMaybe = orderEventDAO.popOrderEvent();
+                orderEventMaybe = orderEventDAO.pop();
             }
         }
     }

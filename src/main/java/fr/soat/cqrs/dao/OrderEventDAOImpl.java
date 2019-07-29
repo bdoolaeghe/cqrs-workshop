@@ -21,14 +21,14 @@ public class OrderEventDAOImpl implements OrderEventDAO {
     }
 
     @Override
-    public void pushOrderEvent(OrderEvent event) {
+    public void push(OrderEvent event) {
         String sql = "INSERT INTO order_event (event_type, product_order) " +
                 "VALUES (?,?)";
         jdbcTemplate.update(sql, event.getClass().getSimpleName(), OrderJsonMapper.toJason(event.getOrder()));
     }
 
     @Override
-    public Optional<OrderEvent> popOrderEvent() {
+    public Optional<OrderEvent> pop() {
         String sql = "DELETE FROM order_event " +
                 "WHERE event_id = (SELECT MIN(event_id) FROM order_event) " +
                 "RETURNING event_id, event_type, product_order";

@@ -6,8 +6,8 @@ import java.util.Optional;
 
 public interface OrderEventDAO {
 
-    void pushOrderEvent(OrderEvent event);
+    void push(OrderEvent event);
 
-    Optional<OrderEvent> popOrderEvent();
+    Optional<OrderEvent> pop();
 
 }

@@ -45,8 +45,8 @@ public class OrderDAOImpl implements OrderDAO {
         order.setId(orderId);
         insertLines(orderId, order.getLines());
 
-        // publish event
-        orderEventDAO.pushOrderEvent(new OrderSavedEvent(order));
+        // push event
+        orderEventDAO.push(new OrderSavedEvent(order));
         return orderId;
     }
 
@@ -73,8 +73,8 @@ public class OrderDAOImpl implements OrderDAO {
         jdbcTemplate.update("DELETE FROM order_line WHERE order_id = ?", orderId);
         jdbcTemplate.update("DELETE FROM product_order WHERE id = ?", orderId);
 
-        // publish event
-        orderEventDAO.pushOrderEvent(new OrderDeletedEvent(order));
+        // push event
+        orderEventDAO.push(new OrderDeletedEvent(order));
     }
 
 }

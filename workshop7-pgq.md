@@ -42,10 +42,11 @@ These 2 operations can be wrapped in a transaction.
 Then write the implementation of the `OrderEventDAO`:
 ```
 public interface OrderEventDAO {
-    void pushOrderEvent(OrderEvent event);
-    OrderEvent popOrderEvent();
+    void push(OrderEvent event);
+    OrderEvent pop();
 }
 ```
+This DAO can be seen as a persistent *Queue*, with 2 basics operation (*push* = put in queue, *pop* = retrieve from queue)
 *Hint: you can use the following SQL queries:*
 * push a new order (enqueue an event):
 ```
@@ -61,7 +62,7 @@ RETURNING event_id, event_type, product_order;
 *N.B.: your DAO implement should make test `OrderEventDAOImplTest` pass green !
 
 #### Amend OrderDAOImpl
-Fix the `OrderDAOImpl` methods writing in `product_order` to also publish an event with `OrderEventDAO.pushOrderEvent()`in the same transaction.
+Fix the `OrderDAOImpl` methods writing in `product_order` to also publish an event with `OrderEventDAO.push()`in the same transaction.
 
 #### Amend ProductMarginUpdater
 ##### Create a Daemon consumer 
