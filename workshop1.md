@@ -32,7 +32,7 @@ Or/and in your IDE, check you can compile the project.
 * have a look to the [HowTo](HOWTO.md) page for some FAQ. 
 
 
-## Implement the [getBestSales()](https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/blob/workshop1/src/main/java/fr/soat/cqrs/service/backoffice/BackOfficeServiceImpl.java#L28) service
+## Implement the [getBestSales()](https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/blob/workshop1/src/main/java/fr/soat/cqrs/service/backoffice/BackOfficeServiceImpl.java#L28) service
 Consider the following e-commerce website (in this sample project, you will find only the Backend part, with no GUI):
 * a Postgres Database, with a [datamodel](https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/tree/master/src/main/sql)
 * some [DAO] classes (https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/tree/master/src/main/java/fr/soat/cqrs/dao)
