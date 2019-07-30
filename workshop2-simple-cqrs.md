@@ -35,7 +35,7 @@ The `FrontService.order()` should now execute 3 operations:
 * per order line, compute the new *margin* to append for each bought product
 * update the *per product total margin* in `product_margin` table !
 
-### Data consistency
+### Data consistency
 These operations should be executed in a *same transaction* to keep data consistency. To define the transaction in a declarative way, use the `@Transactional` spring annotation on the service method:
 ```
 @Service
