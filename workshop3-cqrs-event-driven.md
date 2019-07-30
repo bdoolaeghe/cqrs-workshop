@@ -1,7 +1,7 @@
 # Workshop 3: getBestSales() in a CQRS way and event driven
 
 _Goal:_ 
-Enhance the previous workshop2 getBestSales() CQRS solution to avoid service coupling, thanks to an event bus.
+Enhance the previous workshop2 getBestSales() CQRS solution to avoid domains coupling, thanks to an event bus.
 
 ## Setup a synchronous event bus
 As a simple solution, we'll use the [spring rfamework event bus](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/ApplicationEventPublisher.html) implementation.
