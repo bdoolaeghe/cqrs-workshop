@@ -57,7 +57,7 @@ To update the total margin for each order product, you will have to compute in j
   margin on product = (product.price - product.supply_price) x order.quantity
 ```
 
-### Update the total margins in DB 
+### Update the total margins in DB 
 For each product, the computed margin should be:
 * either accumulated in `product_margin` table (add to the previous `total_margin` value for the product reference). 
 * or init the total_margin first value, when the product is bought for the first time (no row yet to update in `product_margin` !). In this case, we should insert the computed margin as `total_margin` value. 
