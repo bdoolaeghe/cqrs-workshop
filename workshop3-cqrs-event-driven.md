@@ -1,10 +1,14 @@
 # Workshop 3: getBestSales() in a CQRS way and event driven
 
 _Goal:_ 
-Enhance the previous workshop2 getBestSales() CQRS solution to avoid domains coupling, thanks to an event bus.
+Enhance the previous workshop2 getBestSales() CQRS solution to avoid service coupling, thanks to an event bus.
 
 ## Setup a synchronous event bus
 As a simple solution, we'll use the [spring rfamework event bus](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/ApplicationEventPublisher.html) implementation.
+Consider it as a transient message broker, composed of:
+* event **publisher(s)** (also called *producer*) wo will raise the *events*, using [ApplicationEventPublisher](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/ApplicationEventPublisher.html). 
+* event **listener(s)** (also called *subscriber* or *consumer*), an `@EventListener` annotated callback.
+* the **event queue** (storing the events, pushed by producer(s) and polled by the consumer(s))
 
 ### Publish event when write model is updated
 In the `OrderDAOIMpl`, autowire the `ApplicationEventPublisher` spring bean :
