@@ -5,6 +5,10 @@ Enhance the previous workshop2 getBestSales() CQRS solution to avoid service cou
 
 ## Setup a synchronous event bus
 As a simple solution, we'll use the [spring rfamework event bus](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/ApplicationEventPublisher.html) implementation.
+Consider it as a transient message broker, composed of:
+* event **publisher(s)** (also called *producer*) wo will raise the *events*, using [ApplicationEventPublisher](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/ApplicationEventPublisher.html). 
+* event **listener(s)** (also called *subscriber* or *consumer*), an `@EventListener` annotated callback.
+* the **event queue** (storing the events, pushed by producer(s) and polled by the consumer(s))
 
 ### Publish event when write model is updated
 In the `OrderDAOIMpl`, autowire the `ApplicationEventPublisher` spring bean :
