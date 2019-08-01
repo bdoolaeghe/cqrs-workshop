@@ -8,7 +8,7 @@ An initiation workshop about [CQRS](https://martinfowler.com/bliki/CQRS.html)
 * Have a look to the [How To / FAQ](HOWTO.md)
 
 ## Training
-* [workshop 1: introduction](https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/blob/workshop1/workshop1-introduction.md) 
+* [workshop 1: introduction](../workshop1/workshop1-introduction.md) 
 * [workshop 2: a simple CQRS implementation](https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/blob/workshop2/workshop2-simple-cqrs.md)
 * [workshop 3: a CQRS implementation using event bus](https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/blob/workshop3/workshop3-cqrs-event-driven.md)
 * [workshop 4: a CQRS implementation using async event bus](https://gitlab.soat.fr/bruno.doolaeghe/cqrs-workshop/blob/workshop4/workshop4-cqrs-event-driven-async.md )
