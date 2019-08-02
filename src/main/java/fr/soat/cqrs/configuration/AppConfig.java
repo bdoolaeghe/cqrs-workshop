@@ -24,7 +24,8 @@ public class AppConfig {
     @Autowired
     Environment environment;
 
-    private final String URL = "url";
+    private final String HOST = "dbHost";
+    private final String PORT = "dbPort";
     private final String USER = "dbuser";
     private final String DRIVER = "driver";
     private final String PASSWORD = "dbpassword";
@@ -32,13 +33,37 @@ public class AppConfig {
     @Bean
     DataSource dataSource() {
         DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
-        driverManagerDataSource.setUrl(environment.getProperty(URL));
-        driverManagerDataSource.setUsername(environment.getProperty(USER));
-        driverManagerDataSource.setPassword(environment.getProperty(PASSWORD));
-        driverManagerDataSource.setDriverClassName(environment.getProperty(DRIVER));
+        driverManagerDataSource.setUrl(getDbUrl());
+        driverManagerDataSource.setUsername(getDbUser());
+        driverManagerDataSource.setPassword(getDbPassword());
+        driverManagerDataSource.setDriverClassName(getDbDriver());
         return driverManagerDataSource;
     }
 
+    public String getDbDriver() {
+        return environment.getProperty(DRIVER);
+    }
+
+    public String getDbPassword() {
+        return environment.getProperty(PASSWORD);
+    }
+
+    public String getDbUser() {
+        return environment.getProperty(USER);
+    }
+
+    public String getDbUrl() {
+        String url = "jdbc:postgresql://" + getDbHost() + ":" + getDbPort() + "/";
+        return  url;
+    }
+
+    public String getDbPort() {
+        return environment.getProperty(PORT);
+    }
+
+    public String getDbHost() {
+        return environment.getProperty(HOST);
+    }
 
     @Bean
     public PlatformTransactionManager transactionManager(DataSource datasource) throws SQLException {

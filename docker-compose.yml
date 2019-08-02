@@ -1,5 +1,5 @@
 postgres:
-  image: postgres:10.9
+  image: debezium/example-postgres:0.9
   container_name: "my_postgres"
   ports:
     - "5432:5432"

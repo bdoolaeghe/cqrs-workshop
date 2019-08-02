@@ -1,7 +1,6 @@
 package fr.soat.cqrs.service.front;
 
 import fr.soat.cqrs.dao.OrderDAO;
-import fr.soat.cqrs.dao.OrderEventDAO;
 import fr.soat.cqrs.model.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -13,12 +13,10 @@ import java.util.List;
 public class OrderDAOImpl implements OrderDAO {
 
     private final JdbcTemplate jdbcTemplate;
-    private final OrderEventDAO orderEventDAO;
 
     @Autowired
-    public OrderDAOImpl(DataSource dataSource, OrderEventDAO orderEventDAO) {
+    public OrderDAOImpl(DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        this.orderEventDAO = orderEventDAO;
     }
 
     public Order getById(Long orderId) {
@@ -42,11 +40,7 @@ public class OrderDAOImpl implements OrderDAO {
         Long orderId = insertOrder(order);
         order.setId(orderId);
         insertLines(orderId, order.getLines());
-
-        // push event
-        // FIXME publish an order event with OrderEventDAO !
-        throw new RuntimeException("implement me !");
-//        return orderId;
+        return orderId;
     }
 
     private Long insertOrder(Order order) {
@@ -71,10 +65,6 @@ public class OrderDAOImpl implements OrderDAO {
         // delete
         jdbcTemplate.update("DELETE FROM order_line WHERE order_id = ?", orderId);
         jdbcTemplate.update("DELETE FROM product_order WHERE id = ?", orderId);
-
-        // push event
-        // FIXME publish an order event with OrderEventDAO !
-        throw new RuntimeException("implement me !");
     }
 
 }

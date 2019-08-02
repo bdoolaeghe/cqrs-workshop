@@ -1,6 +1,5 @@
 package fr.soat.cqrs.service.backoffice;
 
-import fr.soat.cqrs.dao.OrderEventDAO;
 import fr.soat.cqrs.dao.ProductDAO;
 import fr.soat.cqrs.dao.ProductMarginDAO;
 import fr.soat.cqrs.event.OrderDeletedEvent;
@@ -19,15 +18,13 @@ public class ProductMarginUpdater {
 
     private final ProductDAO productDAO;
     private final ProductMarginDAO productMarginDAO;
-    private final OrderEventDAO orderEventDAO;
 
     /** polls and consumes events only if enabled */
     private final AtomicBoolean enabled = new AtomicBoolean(false);
 
-    public ProductMarginUpdater(ProductDAO productDAO, ProductMarginDAO productMarginDAO, OrderEventDAO orderEventDAO) {
+    public ProductMarginUpdater(ProductDAO productDAO, ProductMarginDAO productMarginDAO) {
         this.productDAO = productDAO;
         this.productMarginDAO = productMarginDAO;
-        this.orderEventDAO = orderEventDAO;
         disable();
     }
 
@@ -41,14 +38,14 @@ public class ProductMarginUpdater {
         log.info(this.getClass().getSimpleName() + " is enabled (start consuming events)");
     }
 
-    //FIXME make me execute every 100ms !
-    public void consumePendingOrderEvents() {
-        if (enabled.get()) {
-            log.info(this.getClass().getSimpleName() + " is polling for pending events...");
-            // FIXME poll pending events and consume them until there is no more pending events !
-            throw new RuntimeException("implement me !");
-        }
-    }
+//    //FIXME make me execute every 100ms !
+//    public void consumePendingOrderEvents() {
+//        if (enabled.get()) {
+//            log.info(this.getClass().getSimpleName() + " is polling for pending events...");
+//            // FIXME poll pending events and consume them until there is no more pending events !
+//            throw new RuntimeException("implement me !");
+//        }
+//    }
 
 
     private void onOrderSavedEvent(OrderSavedEvent orderSavedEvent) {

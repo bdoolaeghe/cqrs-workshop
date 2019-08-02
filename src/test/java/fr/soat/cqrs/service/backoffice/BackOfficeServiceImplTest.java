@@ -18,8 +18,8 @@ import javax.sql.DataSource;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static fr.soat.cqrs.model.order.OrderFixtures.ProductEnum.*;
 import static fr.soat.cqrs.model.order.OrderFixtures.*;
+import static fr.soat.cqrs.model.order.OrderFixtures.ProductEnum.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
