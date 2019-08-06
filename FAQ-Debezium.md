@@ -20,8 +20,10 @@ You probably have another instance of debezium engine started. Check the running
 
 # I fail to capture events for a given table 
 ## potential cause 1
-Maybe your database state and the offset file have become inconsistent after a postgres container rebuild/restart. delete `/tmp/debezium/` folder content and retry.
+Check the folder `/tmp/debezium/` exists and current user wan write in it.
 ## potential cause 2
+Maybe your database state and the offset file have become inconsistent after a postgres container rebuild/restart. delete `/tmp/debezium/` folder content and retry.
+## potential cause 3
 Check the table *whitelist* in configuration:
 ``` 
   .with("table.whitelist", tableName)

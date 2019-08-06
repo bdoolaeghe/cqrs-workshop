@@ -3,6 +3,7 @@
 all: db/up
 
 db/build:
+	mkdir -p /tmp/debezium
 	docker-compose build
 
 db/up: db/build

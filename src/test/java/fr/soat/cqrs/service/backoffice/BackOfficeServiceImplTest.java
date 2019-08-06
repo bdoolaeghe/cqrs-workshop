@@ -6,6 +6,7 @@ import fr.soat.cqrs.model.Order;
 import fr.soat.cqrs.model.order.OrderFixtures;
 import fr.soat.cqrs.service.front.FrontService;
 import lombok.extern.slf4j.Slf4j;
+import org.codehaus.plexus.util.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,11 +16,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.sql.DataSource;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static fr.soat.cqrs.model.order.OrderFixtures.*;
 import static fr.soat.cqrs.model.order.OrderFixtures.ProductEnum.*;
+import static fr.soat.cqrs.model.order.OrderFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
@@ -40,13 +43,30 @@ public class BackOfficeServiceImplTest {
     @Before
     public void setUp() {
         // We need to clean the DB, because the previous test run commited some data
-        productMarginUpdater.disable();
+        productMarginUpdater.stop();
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         jdbcTemplate.update("TRUNCATE product_margin;");
         jdbcTemplate.update("TRUNCATE product_order CASCADE;");
-        jdbcTemplate.update("TRUNCATE order_event;");
         log.info("DB cleaned");
-        productMarginUpdater.enable();
+
+        // clean connector offset
+        cleanConnectorOffset();
+
+        productMarginUpdater.start();
+    }
+
+    private void cleanConnectorOffset() {
+        // we use kafka connect offset files backing store in /tmp/debezium for tests
+        // to let debezium store the current WAL offset of "captured" changes
+
+        // delete and recreate offset files folder
+        try {
+            File offsetDir = new File("/tmp/debezium");
+            FileUtils.deleteDirectory(offsetDir);
+            offsetDir.mkdir();
+        } catch (IOException e) {
+            log.warn("Failed to clean offset files", e);
+        }
     }
 
     @Test
@@ -83,9 +103,12 @@ public class BackOfficeServiceImplTest {
         // Then
         waitAWhile();
         BestSales bestSales = backOfficeService.getBestSales();
-        assertThat(firstProduct(bestSales)).isEqualTo(TSHIRT_BOB_LEPONGE.name);
-        assertThat(secondProduct(bestSales)).isEqualTo(ROBE_REINE_DES_NEIGES.name);
-
+        assertThat(bestSales.getSales())
+                .extracting(sales -> tuple(sales.getProductName(), sales.getProductMargin()))
+                .containsExactly(
+                        tuple(TSHIRT_BOB_LEPONGE.name, 0f),
+                        tuple(ROBE_REINE_DES_NEIGES.name, 0f)
+                );
         // When
         somebodyCancelOrders(orderId);
 

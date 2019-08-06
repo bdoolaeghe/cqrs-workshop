@@ -15,4 +15,7 @@ public class BestSales {
 
     private List<Sales> sales = new ArrayList<>();
 
+    public int size() {
+        return sales.size();
+    }
 }
