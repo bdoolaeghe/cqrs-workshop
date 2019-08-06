@@ -19,6 +19,9 @@ ERROR io.debezium.connector.postgresql.connection.PostgresReplicationConnection 
 You probably have another instance of debezium engine started. Check the running JVMs with `jps` and kill unwanted JVMs.
 
 # I fail to capture events for a given table 
+## potential cause 1
+Maybe your database state and the offset file have become inconsistent after a postgres container rebuild/restart. delete `/tmp/debezium/` folder content and retry.
+## potential cause 2
 Check the table *whitelist* in configuration:
 ``` 
   .with("table.whitelist", tableName)
