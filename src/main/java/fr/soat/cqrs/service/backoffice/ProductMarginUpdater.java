@@ -27,7 +27,7 @@ public class ProductMarginUpdater {
     }
 
     public void start() {
-        databaseChangeEventListener.startListener("public.product_order", this::onProductOrderRecord);
+        databaseChangeEventListener.startListener("public.product", this::onProductOrderRecord);
         log.info(this.getClass().getSimpleName() + " is started (start consuming events)");
     }
 

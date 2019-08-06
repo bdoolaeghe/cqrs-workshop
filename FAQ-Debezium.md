@@ -30,3 +30,9 @@ Check the table *whitelist* in configuration:
 ```
 Check the table name (expected FQN table name with *schema*)
 To capture changes on all tables, remove the whitelist key.
+
+# After an update in a table, I can see the record after, but not the record before
+To see the record before, you need to setup a more "verbose" mode to the WAL entries, wit the follwogin per table query:
+```
+ALTER TABLE public.product REPLICA IDENTITY FULL;
+```
