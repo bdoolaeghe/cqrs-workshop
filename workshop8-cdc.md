@@ -10,3 +10,5 @@ check the embedded [debizium engine documentation](https://debezium.io/docs/embe
 and [postgres connector](https://debezium.io/docs/connectors/postgresql)
 # Implement the "big boss alerting"
 
+NB: initial load aka "snapshot"
+NB2: how to manage aggregates ? (order = order_lines)
