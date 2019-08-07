@@ -21,7 +21,7 @@ import java.util.function.Consumer;
 public class DatabaseChangeEventListener {
 
     private final AppConfig appConfig;
-    private final ExecutorService executor = Executors.newFixedThreadPool(2, new BasicThreadFactory.Builder().namingPattern("cdc-engine-thread-%d").build());
+    private ExecutorService executor = null;
     private final AtomicInteger slotCounter = new AtomicInteger(1);
 
     @Autowired
@@ -41,13 +41,18 @@ public class DatabaseChangeEventListener {
         log.info("starting listener engine fro table {}...", tableName);
         String slotName = "my_slot_" + slotCounter.getAndIncrement();
         EmbeddedEngine engine = newEmbeddedEngine(tableName, slotName, sourceRecordConsumer);
+        if (executor == null) {
+            executor = Executors.newFixedThreadPool(2, new BasicThreadFactory.Builder().namingPattern("cdc-engine-thread-%d").build());
+        }
         ((ExecutorService) executor).submit(engine);
     }
 
     public void stopListeners() {
         log.info("stopping engine(s)...");
-        if (executor != null)
+        if (executor != null) {
             executor.shutdown();
+            executor = null;
+        }
     }
 
     private EmbeddedEngine newEmbeddedEngine(String tableName, String pgReplicationSlotName, Consumer<SourceRecord> eventConsumer) {

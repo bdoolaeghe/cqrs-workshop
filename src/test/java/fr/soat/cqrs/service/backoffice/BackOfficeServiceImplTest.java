@@ -106,8 +106,8 @@ public class BackOfficeServiceImplTest {
         assertThat(bestSales.getSales())
                 .extracting(sales -> tuple(sales.getProductName(), sales.getProductMargin()))
                 .containsExactly(
-                        tuple(TSHIRT_BOB_LEPONGE.name, 0f),
-                        tuple(ROBE_REINE_DES_NEIGES.name, 0f)
+                        tuple(TSHIRT_BOB_LEPONGE.name, 4f),
+                        tuple(ROBE_REINE_DES_NEIGES.name, 4f)
                 );
         // When
         somebodyCancelOrders(orderId);
