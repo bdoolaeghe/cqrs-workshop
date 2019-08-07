@@ -6,14 +6,12 @@ CREATE TABLE product
     supply_price float
 );
 ALTER SEQUENCE product_reference_seq RESTART WITH 4;
-ALTER TABLE product REPLICA IDENTITY FULL;
 
 CREATE TABLE product_order
 (
     id SERIAL PRIMARY KEY
 );
 ALTER SEQUENCE product_order_id_seq RESTART WITH 101;
-ALTER TABLE product_order REPLICA IDENTITY FULL;
 
 CREATE TABLE order_line
 (
@@ -23,7 +21,6 @@ CREATE TABLE order_line
     quantity  int NOT NULL default 1
 );
 ALTER SEQUENCE order_line_id_seq RESTART WITH 1001;
-ALTER TABLE order_line REPLICA IDENTITY FULL;
 
 
 CREATE TABLE product_margin
@@ -32,5 +29,12 @@ CREATE TABLE product_margin
     product_name      TEXT,
     total_margin      FLOAT CHECK (total_margin >= 0)
 );
-ALTER TABLE product_margin REPLICA IDENTITY FULL;
+
+CREATE TABLE order_report
+(
+    product_reference INTEGER PRIMARY KEY,
+    product_name      TEXT,
+    price             FLOAT,
+    last_order_date   date
+);
 

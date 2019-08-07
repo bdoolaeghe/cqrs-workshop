@@ -30,3 +30,24 @@ DELETE FROM product where name = 'LA casquette pat patrouille';
 ``` 
 
 *NB: you can have a look to the embedded [debizium engine documentation](https://debezium.io/docs/embedded/#in_the_code) and [postgres connector](https://debezium.io/docs/connectors/postgresql) for more details*
+
+# Implement a new data projection orders reporting
+We now want to create a new *orders reporting* in a CQRS way using Debezium.
+The goal is to feed the new table `order_report`, containing the last ordering date for each sold product, with its price:
+
+|product_reference|product_name          |price|last_order_date|
+|-----------------|----------------------|-----|---------------|
+| 2               |t-shirt bob l eponge  | 5.9 |  2019/09/11   |
+| ...             |        ...           | ... |  ...          |   
+
+*NB: we consider that a product that has been ordered, then order has been cancelled, should stay in `order_report`.*
+
+To feed `order_report`, we'ell use a Debezium listener plugged onto `order_line` table.
+
+
+vs trigger:
+* pas ds la meme transactoin (pas de blocage)
+* appels ext
+* async
+* pas de logiqu emetier en base
+* base cible peut etre base ext (comme BI) voir autre type de storage
