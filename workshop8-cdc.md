@@ -11,9 +11,9 @@ The embedded mode is working as following:
 * *applicaiton side*: a connector plugged onto the slot, consuming the events.
 * events are technical records containing the data row before change, and the data row after change.
 
-First of all, start a postgres server with already setup debezium plugins:
+First of all, start the postgres server with already setup debezium plugins:
 ``` 
-cqrs-workshop$ make db/up
+cqrs-workshop$ make db/reset
 ```
 Than, start the [Main](src/main/java/fr/soat/cqrs/Main.java) spring application, set up as a daemon to listen to and log SourceRecrds (events) from the slot.
 
