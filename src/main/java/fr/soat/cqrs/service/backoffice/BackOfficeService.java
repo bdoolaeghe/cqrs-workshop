@@ -1,12 +1,13 @@
 package fr.soat.cqrs.service.backoffice;
 
-import fr.soat.cqrs.model.BestSales;
 import fr.soat.cqrs.model.Order;
+
+import java.util.List;
 
 public interface BackOfficeService {
 
     Order getOrder(Long orderId);
 
-    BestSales getBestSales();
+    List<String> getOrderReport();
 
 }

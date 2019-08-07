@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.time.LocalDate;
+import java.util.List;
 
 @Component
 public class OrderReportDAOImpl implements OrderReportDAO {
@@ -24,6 +25,13 @@ public class OrderReportDAOImpl implements OrderReportDAO {
                     "ON CONFLICT (product_reference) DO UPDATE " +
                     "SET last_order_date = ? " +
                     "WHERE order_report.product_reference = ?";
-            jdbcTemplate.update(upsertSQL, productReference, productName, price, LocalDate.now(), LocalDate.now(), productReference);
+            jdbcTemplate.update(upsertSQL, productReference, productName, String.valueOf(price),  LocalDate.now(), LocalDate.now(), productReference);
         }
+
+    @Override
+    public List<String> getAllSortByDate() {
+        return jdbcTemplate.queryForList("select product_reference || ';' || product_name || ';' || price || ';'  || last_order_date || ';'  " +
+                "from order_report " +
+                "order by  last_order_date, product_reference desc", String.class);
+    }
 }

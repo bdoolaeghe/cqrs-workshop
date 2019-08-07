@@ -1,22 +1,23 @@
 package fr.soat.cqrs.service.backoffice;
 
 import fr.soat.cqrs.dao.OrderDAO;
-import fr.soat.cqrs.dao.ProductMarginDAO;
-import fr.soat.cqrs.model.BestSales;
+import fr.soat.cqrs.dao.OrderReportDAO;
 import fr.soat.cqrs.model.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class BackOfficeServiceImpl implements BackOfficeService {
 
     private final OrderDAO orderDAO;
-    private final ProductMarginDAO productMarginDAO;
+    private final OrderReportDAO orderReportDAO;
 
     @Autowired
-    public BackOfficeServiceImpl(OrderDAO orderDAO, ProductMarginDAO productMarginDAO) {
+    public BackOfficeServiceImpl(OrderDAO orderDAO, OrderReportDAO orderReportDAO) {
         this.orderDAO = orderDAO;
-        this.productMarginDAO = productMarginDAO;
+        this.orderReportDAO = orderReportDAO;
     }
 
     @Override
@@ -25,7 +26,8 @@ public class BackOfficeServiceImpl implements BackOfficeService {
     }
 
     @Override
-    public BestSales getBestSales() {
-        return productMarginDAO.getBestSales();
+    public List<String> getOrderReport() {
+        return orderReportDAO.getAllSortByDate();
     }
+
 }

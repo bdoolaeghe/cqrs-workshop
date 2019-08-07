@@ -22,19 +22,11 @@ CREATE TABLE order_line
 );
 ALTER SEQUENCE order_line_id_seq RESTART WITH 1001;
 
-
-CREATE TABLE product_margin
-(
-    product_reference INTEGER PRIMARY KEY,
-    product_name      TEXT,
-    total_margin      FLOAT CHECK (total_margin >= 0)
-);
-
 CREATE TABLE order_report
 (
     product_reference INTEGER PRIMARY KEY,
     product_name      TEXT,
-    price             FLOAT,
+    price             TEXT,
     last_order_date   date
 );
 

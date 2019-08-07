@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.time.LocalDate;
+import java.util.List;
 
 import static fr.soat.cqrs.model.order.OrderFixtures.ProductEnum.CHAUSSETTES_SPIDERMAN;
 import static fr.soat.cqrs.model.order.OrderFixtures.ProductEnum.TSHIRT_BOB_LEPONGE;
@@ -35,10 +36,12 @@ public class OrderReportDAOImplTest {
         orderReportDAO.upsert(TSHIRT_BOB_LEPONGE.reference, TSHIRT_BOB_LEPONGE.name, 5.9f, LocalDate.now());
         orderReportDAO.upsert(TSHIRT_BOB_LEPONGE.reference, TSHIRT_BOB_LEPONGE.name, 5.9f, LocalDate.now());
         orderReportDAO.upsert(CHAUSSETTES_SPIDERMAN.reference, CHAUSSETTES_SPIDERMAN.name, 2.9f, LocalDate.now());
+        List<String> report = orderReportDAO.getAllSortByDate();
 
         // then
-        Integer count = new JdbcTemplate(dataSource).queryForObject("select count(*) from order_report", Integer.class);
-        assertThat(count).isEqualTo(2);
+        assertThat(report.size()).isEqualTo(2);
+        assertThat(report.get(0)).isEqualTo("2;t-shirt bob l eponge;5.9;2019-08-07;");
+        assertThat(report.get(1)).isEqualTo("1;Chaussettes spiderman;2.9;2019-08-07;");
     }
 
 }

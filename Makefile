@@ -18,8 +18,8 @@ db/log:
 db/reset: db/down db/clean db/up
 
 db/clean:
-	docker volume rm postgresql-data-95
-	rm /tmp/debezium/offset*.dat
+	docker volume rm postgresql-data-95 || exit 0
+	rm /tmp/debezium/offset*.dat || exit 0
 
 db/psql:
 	docker exec -ti my_postgres bash -c "psql -U postgres"

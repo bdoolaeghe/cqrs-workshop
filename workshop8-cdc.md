@@ -42,7 +42,35 @@ The goal is to feed the new table `order_report`, containing the last ordering d
 
 *NB: we consider that a product that has been ordered, then order has been cancelled, should stay in `order_report`.*
 
-To feed `order_report`, we'ell use a Debezium listener plugged onto `order_line` table.
+To feed `order_report` table, we'ell use [DatabaseChangeEventListener](src/main/java/fr/soat/cqrs/service/backoffice/DatabaseChangeEventListener.java) plugged onto `order_line` table, to insert into `order_report` table.
+First, create class `OrderReportUpdater` (similar to `ProductListener`), to listen to data changes on table `order_line`:
+``` 
+@Slf4j
+@Service
+public class OrderReportUpdater {
+
+    private final DatabaseChangeEventListener databaseChangeEventListener;
+
+    public OrderReportUpdater(DatabaseChangeEventListener databaseChangeEventListener) {
+        this.databaseChangeEventListener = databaseChangeEventListener;
+    }
+
+    public void start() {
+        databaseChangeEventListener.startListener("public.order_line", this::onOrderLineRecord);
+        log.info(this.getClass().getSimpleName() + " is started (start consuming events)");
+    }
+
+    public void stop() {
+        databaseChangeEventListener.stopListeners();
+        log.info(this.getClass().getSimpleName() + " is stopped (stop consuming events)");
+    }
+
+    private void onOrderLineRecord(SourceRecord record) {
+       ...
+    }
+}
+```
+
 
 
 vs trigger:
