@@ -44,7 +44,7 @@ public class ProductMarginUpdater {
             Struct recordValue = (Struct) record.value();
             if (recordValue != null) {
                 String op = recordValue.getString("op");
-                if ("c".equals(op) || "r".equals(op)) { // snapshot or insert
+                if ("c".equals(op)) {
                     onCreateOrderLine(record);
                 } else if ("d".equals(op)) { // delete
                     onDeleteOrderLine(record);
@@ -67,6 +67,7 @@ public class ProductMarginUpdater {
 
         // 2. update product_margin
         productMarginDAO.decrementProductMargin(reference, product.getName(), productMargin);
+        log.info("(-) decreasing margin on {} of {}", product.getName(), productMargin);
     }
 
     private void onCreateOrderLine(SourceRecord record) {
@@ -79,6 +80,7 @@ public class ProductMarginUpdater {
 
         // 2. update product_margin
         productMarginDAO.incrementProductMargin(reference, product.getName(), productMargin);
+        log.info("(+) increasing margin on {} of {}", product.getName(), productMargin);
     }
 
 }

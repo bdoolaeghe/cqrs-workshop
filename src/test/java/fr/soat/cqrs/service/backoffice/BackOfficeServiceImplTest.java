@@ -8,6 +8,7 @@ import fr.soat.cqrs.service.front.FrontService;
 import lombok.extern.slf4j.Slf4j;
 import org.codehaus.plexus.util.FileUtils;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,22 +41,31 @@ public class BackOfficeServiceImplTest {
     @Autowired
     private ProductMarginUpdater productMarginUpdater;
 
+    private static boolean isListenerStarted = false;
+
+    @BeforeClass
+    public static void beforeClass() {
+        cleanConnectorOffset();
+    }
+
     @Before
     public void setUp() {
         // We need to clean the DB, because the previous test run commited some data
-        productMarginUpdater.stop();
+        waitAWhile();
+
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         jdbcTemplate.update("TRUNCATE product_margin;");
         jdbcTemplate.update("TRUNCATE product_order CASCADE;");
         log.info("DB cleaned");
 
-        // clean connector offset
-        cleanConnectorOffset();
-
-        productMarginUpdater.start();
+        if (!isListenerStarted) {
+            productMarginUpdater.start();
+            isListenerStarted = true;
+            waitAWhile();
+        }
     }
 
-    private void cleanConnectorOffset() {
+    private static void cleanConnectorOffset() {
         // we use kafka connect offset files backing store in /tmp/debezium for tests
         // to let debezium store the current WAL offset of "captured" changes
 
@@ -82,7 +92,7 @@ public class BackOfficeServiceImplTest {
                 );
 
         // When
-        waitAWhile();
+        waitAWhile(5);
         BestSales bestSales = backOfficeService.getBestSales();
 
         // Then
@@ -96,8 +106,8 @@ public class BackOfficeServiceImplTest {
     public void should_decrease_product_margin_when_cancelling_an_order() throws InterruptedException {
         // When
         Long orderId = somebodyOrders(
-                one(TSHIRT_BOB_LEPONGE),
-                two(ROBE_REINE_DES_NEIGES)
+                two(TSHIRT_BOB_LEPONGE),
+                one(ROBE_REINE_DES_NEIGES)
         );
 
         // Then
@@ -106,8 +116,8 @@ public class BackOfficeServiceImplTest {
         assertThat(bestSales.getSales())
                 .extracting(sales -> tuple(sales.getProductName(), sales.getProductMargin()))
                 .containsExactly(
-                        tuple(TSHIRT_BOB_LEPONGE.name, 4f),
-                        tuple(ROBE_REINE_DES_NEIGES.name, 4f)
+                        tuple(TSHIRT_BOB_LEPONGE.name, 8f),
+                        tuple(ROBE_REINE_DES_NEIGES.name, 2f)
                 );
         // When
         somebodyCancelOrders(orderId);
@@ -137,7 +147,7 @@ public class BackOfficeServiceImplTest {
             somebodyCancelOrders(orderId);
         }
 
-        waitAWhile(3);
+        waitAWhile(5);
         BestSales bestSales = backOfficeService.getBestSales();
         assertThat(bestSales.getSales())
                 .extracting(sales -> tuple(sales.getProductName(), sales.getProductMargin()))
