@@ -31,9 +31,9 @@ DELETE FROM product where name = 'LA casquette pat patrouille';
 
 *NB: you can have a look to the embedded [debizium engine documentation](https://debezium.io/docs/embedded/#in_the_code) and [postgres connector](https://debezium.io/docs/connectors/postgresql) for more details*
 
-# Implement a new data projection orders reporting
+# Implement a new data projection (`order_report`)
 We now want to create a new *orders reporting* in a CQRS way using Debezium.
-The goal is to feed the new table `order_report`, containing the last ordering date for each sold product, with its price:
+The goal is to be able to report from the new table `order_report`, the last ordering date for each sold product, with its price:
 
 |product_reference|product_name          |price|last_order_date|
 |-----------------|----------------------|-----|---------------|
@@ -42,40 +42,22 @@ The goal is to feed the new table `order_report`, containing the last ordering d
 
 *NB: we consider that a product that has been ordered, then order has been cancelled, should stay in `order_report`.*
 
-To feed `order_report` table, we'ell use [DatabaseChangeEventListener](src/main/java/fr/soat/cqrs/service/backoffice/DatabaseChangeEventListener.java) plugged onto `order_line` table, to insert into `order_report` table.
-First, create class `OrderReportUpdater` (similar to `ProductListener`), to listen to data changes on table `order_line`:
+To feed `order_report` table, we'ell use [DatabaseChangeEventListener](src/main/java/fr/soat/cqrs/service/backoffice/DatabaseChangeEventListener.java) plugged onto `order_line` table, to insert into `order_report` table whan an order is registered.
+In `OrderReportUpdater`, add a listener to capture changes in table `order_line`, using callback `onOrderLineRecord()`:
 ``` 
-@Slf4j
-@Service
 public class OrderReportUpdater {
-
-    private final DatabaseChangeEventListener databaseChangeEventListener;
-
-    public OrderReportUpdater(DatabaseChangeEventListener databaseChangeEventListener) {
-        this.databaseChangeEventListener = databaseChangeEventListener;
-    }
-
+    ...
     public void start() {
         databaseChangeEventListener.startListener("public.order_line", this::onOrderLineRecord);
         log.info(this.getClass().getSimpleName() + " is started (start consuming events)");
     }
-
-    public void stop() {
-        databaseChangeEventListener.stopListeners();
-        log.info(this.getClass().getSimpleName() + " is stopped (stop consuming events)");
-    }
-
-    private void onOrderLineRecord(SourceRecord record) {
-       ...
-    }
-}
+    ...
+ }
 ```
+Then implement callback method `onOrderLineRecord`:
+1. parse the record to react on snapshot/insert operations
+2. get the product *reference* from the record
+3. load the product by *reference* using `ProductDAO`
+4. upsert a row in `order_report` with product reference, name, price, and current Date (Use [OrderReportDAO#upsert()](src/main/java/fr/soat/cqrs/dao/OrderReportDAO.java#L7))
 
-
-
-vs trigger:
-* pas ds la meme transactoin (pas de blocage)
-* appels ext
-* async
-* pas de logiqu emetier en base
-* base cible peut etre base ext (comme BI) voir autre type de storage
+Once implemented, `BackOfficeServiceImplTest` should pass green !

@@ -25,8 +25,8 @@ public class OrderReportUpdater {
     }
 
     public void start() {
-        databaseChangeEventListener.startListener("public.order_line", this::onOrderLineRecord);
-        log.info(this.getClass().getSimpleName() + " is started (start consuming events)");
+        //FIXME start a listener for table order_line, using callback onOrderLineRecord()
+        throw new RuntimeException("implement me !");
     }
 
     public void stop() {
@@ -37,22 +37,12 @@ public class OrderReportUpdater {
     private void onOrderLineRecord(SourceRecord orderLineRecord) {
         log.info("SourceRecord received: {}", orderLineRecord);
         try {
-            Struct recordValue = (Struct) orderLineRecord.value();
-            if (recordValue != null) {
-                String op = recordValue.getString("op");
-                if ("r".equals(op) || "c".equals(op)) {
-                    //insert / snapshot
-                    Struct row = (Struct) ((Struct) orderLineRecord.value()).get("after");
-                    long reference = Long.valueOf((int)row.get("reference"));
-                    Product product = productDAO.getByReference(reference);
-
-                    // 2. update order_report
-                    orderReportDAO.upsert(reference, product.getName(), product.getPrice(), LocalDate.now());
-                    log.info("adding in report {}", product.getName());
-                } else {
-                    log.warn("Received unsupported record: {}", orderLineRecord);
-                }
-            }
+            //FIXME
+            // 1. parse the record to react on snapshot/insert operations (check ProductListener#onProductRecord for an example)
+            // 2. get the product *reference* from the record
+            // 3. load the product by *reference* using `ProductDAO`
+            // 4. upsert a row in `order_report` with product reference, name, price, and current Date (Use [OrderReportDAO#upsert()](src/main/java/fr/soat/cqrs/dao/OrderReportDAO.java#L7))
+            throw new RuntimeException("implement me !");
         } catch (Exception e) {
             log.error("Failed to consume SourceRecord", e);
         }
