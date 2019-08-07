@@ -40,8 +40,8 @@ public class OrderReportDAOImplTest {
 
         // then
         assertThat(report.size()).isEqualTo(2);
-        assertThat(report.get(0)).isEqualTo("2;t-shirt bob l eponge;5.9;2019-08-07;");
-        assertThat(report.get(1)).isEqualTo("1;Chaussettes spiderman;2.9;2019-08-07;");
+        assertThat(report.get(0)).isEqualTo("2;t-shirt bob l eponge;5.9;" + LocalDate.now() + ";");
+        assertThat(report.get(1)).isEqualTo("1;Chaussettes spiderman;2.9;" + LocalDate.now() + ";");
     }
 
 }

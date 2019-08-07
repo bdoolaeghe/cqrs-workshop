@@ -20,6 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -89,8 +90,8 @@ public class BackOfficeServiceImplTest {
 
         // Then
         assertThat(report.size()).isEqualTo(2);
-        assertThat(report.get(0)).isEqualTo("2;t-shirt bob l eponge;5.9;2019-08-07;");
-        assertThat(report.get(1)).isEqualTo("1;Chaussettes spiderman;2.9;2019-08-07;");
+        assertThat(report.get(0)).isEqualTo("2;t-shirt bob l eponge;5.9;" + LocalDate.now() + ";");
+        assertThat(report.get(1)).isEqualTo("1;Chaussettes spiderman;2.9;" + LocalDate.now() + ";");
     }
 
 
