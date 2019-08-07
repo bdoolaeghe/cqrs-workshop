@@ -1,7 +1,7 @@
 # Workshop 8: event queue from change data capture (CDC)
 
 _Goal:_ 
-Experiment an event oriented architecture on a legacy state based application, using the change data capture.
+Experiment an event oriented architecture on a legacy DB based application, using the change data capture.
 
 # Understand Debezium and CDC
 [Debeizium](https://debezium.io/) is a CDC engine compliant with postgres. 
