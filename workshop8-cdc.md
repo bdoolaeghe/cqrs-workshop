@@ -1,11 +1,11 @@
 # Workshop 8: event queue from change data capture (CDC)
 
 _Goal:_ 
-Experiment an event oriented architecture on a legacy state based application, using the change data capture.
+Experiment an event oriented architecture on a legacy DB based application, using the change data capture.
 
 # Understand Debezium and CDC
 [Debeizium](https://debezium.io/) is a CDC engine compliant with postgres. 
-In this worksop, we are going to use it in embedded mode (light engine, not scalable, no HA but more simple stack).
+In this workshop, we are going to use it in embedded mode (light engine, not scalable, no HA but more simple stack).
 The embedded mode is working as following:
 * *postgres server side:* a postgres WAL (transaction log) consumer plugin, exposing the DB change events on a slot.
 * *applicaiton side*: a connector plugged onto the slot, consuming the events.
@@ -31,7 +31,7 @@ DELETE FROM product where name = 'LA casquette pat patrouille';
 
 *NB: you can have a look to the embedded [debizium engine documentation](https://debezium.io/docs/embedded/#in_the_code) and [postgres connector](https://debezium.io/docs/connectors/postgresql) for more details*
 
-# Implement a new data projection (`order_report`)
+# Implement a new data projection (order_report)
 We now want to create a new *orders reporting* in a CQRS way using Debezium.
 The goal is to be able to report from the new table `order_report`, the last ordering date for each sold product, with its price:
 
@@ -43,7 +43,7 @@ The goal is to be able to report from the new table `order_report`, the last ord
 *NB: we consider that a product that has been ordered, then order has been cancelled, should stay in `order_report`.*
 
 To feed `order_report` table, we'ell use [DatabaseChangeEventListener](src/main/java/fr/soat/cqrs/service/backoffice/DatabaseChangeEventListener.java) plugged onto `order_line` table, to insert into `order_report` table whan an order is registered.
-In `OrderReportUpdater`, add a listener to capture changes in table `order_line`, using callback `onOrderLineRecord()`:
+In `OrderReportUpdater`, add a listener to capture changes from table `order_line`, and process it using callback `onOrderLineRecord()`:
 ``` 
 public class OrderReportUpdater {
     ...
