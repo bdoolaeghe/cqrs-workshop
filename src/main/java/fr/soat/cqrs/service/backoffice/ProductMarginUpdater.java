@@ -44,7 +44,7 @@ public class ProductMarginUpdater {
             Struct recordValue = (Struct) record.value();
             if (recordValue != null) {
                 String op = recordValue.getString("op");
-                if ("c".equals(op)) {
+                if ("c".equals(op) || "r".equals(op) ) {
                     onCreateOrderLine(record);
                 } else if ("d".equals(op)) { // delete
                     onDeleteOrderLine(record);

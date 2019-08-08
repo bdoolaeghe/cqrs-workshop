@@ -75,7 +75,7 @@ public class DatabaseChangeEventListener {
                 .with("connector.class", "io.debezium.connector.postgresql.PostgresConnector")
                 .with("offset.storage", "org.apache.kafka.connect.storage.FileOffsetBackingStore")
                 .with("offset.storage.file.filename", "/tmp/debezium/" + offsetDatFile)
-                .with("offset.flush.interval.ms", 100)
+                .with("offset.flush.interval.ms", 1000000)
                 /* begin connector properties */
                 .with("name", tableName + "-postgresql-connector")
                 .with("database.hostname", appConfig.getDbHost())

@@ -6,4 +6,5 @@ debezium_postgres:
   volumes:
     - postgresql-data-95:/var/lib/postgresql/data
     - ./src/main/sql/:/docker-entrypoint-initdb.d/
+    - ./src/test/sh/:/sql
 
