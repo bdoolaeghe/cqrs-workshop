@@ -63,7 +63,8 @@ public class ProductMarginUpdater {
         long reference = Long.valueOf((int)row.get("reference"));
         int quantity = (int) row.get("quantity");
         Product product = productDAO.getByReference(reference);
-        float productMargin = Math.round((product.getPrice() - product.getSupplyPrice()) * quantity);
+        //FIXME compute product total margin
+        float productMargin = 0f;
 
         // 2. update product_margin
         productMarginDAO.decrementProductMargin(reference, product.getName(), productMargin);
@@ -76,7 +77,8 @@ public class ProductMarginUpdater {
         long reference = Long.valueOf((int)row.get("reference"));
         int quantity = (int) row.get("quantity");
         Product product = productDAO.getByReference(reference);
-        float productMargin = Math.round((product.getPrice() - product.getSupplyPrice()) * quantity);
+        //FIXME compute product total margin
+        float productMargin = 0f;
 
         // 2. update product_margin
         productMarginDAO.incrementProductMargin(reference, product.getName(), productMargin);
