@@ -30,4 +30,5 @@ Now, in transactional methods `onCreateOrderLine()` and `onDeleteOrderLine()`, w
 
 *NB: insert into `consumed_event` and update of `product_margin` SHOULD happen in a same transaction to keep coherency.* 
 
+*NB: you can check out the [workshop10_solution](https://github.com/bdoolaeghe/cqrs-workshop/tree/workshop10_solution) branch if you're lazy to implement it !*
 Once fixed, duplicate events will be discarded, and you should be able to successfully replay the crash scenario of [workshop9](https://github.com/bdoolaeghe/cqrs-workshop/blob/workshop9/workshop9-cdc-for-product_margin.md#check-the-coherence-of-data) !
