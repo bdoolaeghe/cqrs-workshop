@@ -1,15 +1,13 @@
 package fr.soat.cqrs.service.backoffice;
 
+import fr.soat.cqrs.dao.EventDAO;
 import fr.soat.cqrs.dao.ProductDAO;
 import fr.soat.cqrs.dao.ProductMarginDAO;
-import fr.soat.cqrs.event.OrderDeletedEvent;
-import fr.soat.cqrs.event.OrderSavedEvent;
-import fr.soat.cqrs.model.Order;
-import fr.soat.cqrs.model.OrderLine;
 import fr.soat.cqrs.model.Product;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.connect.data.Struct;
 import org.apache.kafka.connect.source.SourceRecord;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,11 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductMarginUpdater {
 
     private final ProductDAO productDAO;
+    private final EventDAO eventDAO;
     private final ProductMarginDAO productMarginDAO;
     private final DatabaseChangeEventListener databaseChangeEventListener;
 
-    public ProductMarginUpdater(ProductDAO productDAO, ProductMarginDAO productMarginDAO, DatabaseChangeEventListener databaseChangeEventListener) {
+    public ProductMarginUpdater(ProductDAO productDAO, EventDAO eventDAO, ProductMarginDAO productMarginDAO, DatabaseChangeEventListener databaseChangeEventListener) {
         this.productDAO = productDAO;
+        this.eventDAO = eventDAO;
         this.productMarginDAO = productMarginDAO;
         this.databaseChangeEventListener = databaseChangeEventListener;
     }
@@ -58,10 +58,18 @@ public class ProductMarginUpdater {
     }
 
     private void onDeleteOrderLine(SourceRecord record) {
+        // 0. check event not already processed
+        Struct rowBefore = (Struct) ((Struct) record.value()).get("before");
+        try {
+            eventDAO.insert(hash("D", rowBefore, null));
+        } catch (DuplicateKeyException e) {
+            log.info("(x) Skipping already processed record {}...", record);
+            return;
+        }
+
         // 1. compute margin for order line
-        Struct row = (Struct) ((Struct) record.value()).get("before");
-        long reference = Long.valueOf((int)row.get("reference"));
-        int quantity = (int) row.get("quantity");
+        long reference = Long.valueOf((int)rowBefore.get("reference"));
+        int quantity = (int) rowBefore.get("quantity");
         Product product = productDAO.getByReference(reference);
         float productMargin = Math.round((product.getPrice() - product.getSupplyPrice()) * quantity);
 
@@ -71,16 +79,30 @@ public class ProductMarginUpdater {
     }
 
     private void onCreateOrderLine(SourceRecord record) {
+        // 0. check event not already processed
+        Struct rowAfter = (Struct) ((Struct) record.value()).get("after");
+        try {
+            eventDAO.insert(hash("I", null, rowAfter));
+        } catch (DuplicateKeyException e) {
+            log.info("(x) Skipping already processed record {}...", record);
+            return;
+        }
+
         // 1. compute margin for order line
-        Struct row = (Struct) ((Struct) record.value()).get("after");
-        long reference = Long.valueOf((int)row.get("reference"));
-        int quantity = (int) row.get("quantity");
+        long reference = Long.valueOf((int)rowAfter.get("reference"));
+        int quantity = (int) rowAfter.get("quantity");
         Product product = productDAO.getByReference(reference);
         float productMargin = Math.round((product.getPrice() - product.getSupplyPrice()) * quantity);
 
         // 2. update product_margin
         productMarginDAO.incrementProductMargin(reference, product.getName(), productMargin);
         log.info("(+) increasing margin on {} of {}", product.getName(), productMargin);
+    }
+
+    private String hash(String operation, Struct rowBefore, Struct rowAfter) {
+        return operation + "-" +
+                rowBefore + "-" +
+                rowAfter;
     }
 
 }

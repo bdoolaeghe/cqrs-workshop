@@ -34,3 +34,7 @@ CREATE TABLE product_margin
 );
 ALTER TABLE product_margin REPLICA IDENTITY FULL;
 
+CREATE TABLE consumed_event
+(
+    hash TEXT PRIMARY KEY
+);
