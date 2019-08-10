@@ -28,6 +28,14 @@ Now, in transactional methods `onCreateOrderLine()` and `onDeleteOrderLine()`, w
 * if the event is consumed for the first time, the "hash" will be inserted in the current transaction
 * if the event has already been consumed, the insert will raise a `DuplicateKeyException`, and the `product_margin` should not be updated ! 
 
+You can use the following "hash" in `consumed_event`:
+``` 
+    private String hash(String operation, Struct rowBefore, Struct rowAfter) {
+        return operation + "-" +
+                rowBefore + "-" +
+                rowAfter;
+    }
+```
 *NB: insert into `consumed_event` and update of `product_margin` SHOULD happen in a same transaction to keep coherency.* 
 
 *NB: you can check out the [workshop10_solution](https://github.com/bdoolaeghe/cqrs-workshop/tree/workshop10_solution) branch if you're lazy to implement it !*

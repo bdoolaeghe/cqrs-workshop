@@ -60,12 +60,7 @@ public class ProductMarginUpdater {
     private void onDeleteOrderLine(SourceRecord record) {
         // 0. check event not already processed
         Struct rowBefore = (Struct) ((Struct) record.value()).get("before");
-        try {
-            eventDAO.insert(hash("D", rowBefore, null));
-        } catch (DuplicateKeyException e) {
-            log.info("(x) Skipping already processed record {}...", record);
-            return;
-        }
+        //FIXME check if event is consumed for the first time !
 
         // 1. compute margin for order line
         long reference = Long.valueOf((int)rowBefore.get("reference"));
@@ -81,12 +76,7 @@ public class ProductMarginUpdater {
     private void onCreateOrderLine(SourceRecord record) {
         // 0. check event not already processed
         Struct rowAfter = (Struct) ((Struct) record.value()).get("after");
-        try {
-            eventDAO.insert(hash("I", null, rowAfter));
-        } catch (DuplicateKeyException e) {
-            log.info("(x) Skipping already processed record {}...", record);
-            return;
-        }
+        //FIXME check if event is consumed for the first time !
 
         // 1. compute margin for order line
         long reference = Long.valueOf((int)rowAfter.get("reference"));
@@ -97,12 +87,6 @@ public class ProductMarginUpdater {
         // 2. update product_margin
         productMarginDAO.incrementProductMargin(reference, product.getName(), productMargin);
         log.info("(+) increasing margin on {} of {}", product.getName(), productMargin);
-    }
-
-    private String hash(String operation, Struct rowBefore, Struct rowAfter) {
-        return operation + "-" +
-                rowBefore + "-" +
-                rowAfter;
     }
 
 }

@@ -19,22 +19,14 @@ public class EventDAOImpl implements EventDAO {
 
     @Override
     public boolean exists(String eventHash) {
-        String sql = "select 1 from consumed_event where hash = ?";
-        try {
-            jdbcTemplate.queryForObject(
-                    sql,
-                    new Object[]{eventHash},
-                    Boolean.class);
-            return true;
-        } catch (EmptyResultDataAccessException e) {
-            return false;
-        }
+        //FIXME
+        throw new RuntimeException("implement me !");
     }
 
 
     @Override
     public void insert(String eventHash) {
-        String sql = "INSERT INTO consumed_event VALUES (?)";
-        jdbcTemplate.update(sql, eventHash);
+        //FIXME
+        throw new RuntimeException("implement me !");
     }
 }
