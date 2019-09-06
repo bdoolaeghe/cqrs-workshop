@@ -16,7 +16,7 @@ To train with this workshop, you'll need:
 * basics in SQL
 
 This training also make usage of the following technologies, but there is no absolute need to be aware of them:
-* Appache [Maven](https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html)
+* Apache [Maven](https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html)
 * [Spring framework](https://spring.io/)
 * [docker](https://www.docker.com/) and [docker-compose](https://docs.docker.com/compose/)
 
