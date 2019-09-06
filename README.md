@@ -19,6 +19,7 @@ This training also make usage of the following technologies, but there is no abs
 * Apache [Maven](https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html)
 * [Spring framework](https://spring.io/)
 * [docker](https://www.docker.com/) and [docker-compose](https://docs.docker.com/compose/)
+* [Makefile](https://opensource.com/article/18/8/what-how-makefile)
 
 ## Training
 * [workshop 1: introduction](../workshop1/workshop1-introduction.md) 
