@@ -8,6 +8,16 @@ An initiation workshop about [CQRS](https://martinfowler.com/bliki/CQRS.html)
 * Each workshop has a solution branch (e.g. [workshop1_solution](../workshop1_solution) for solution of [workshop1](../workshop1))
 * Before checking out the next workshop branch, you can save your work by locally committing your solution.
 * Have a look to the [How To / FAQ](HOWTO.md)
+* Check out the [technical prerequisites](#technical-prerequisites) !
+
+## Technical prerequisites 
+To train with this workshop, you'll need:
+* notion in an object oriented language (java)
+* basics in SQL
+This training also make usage of the following technologies, but there is no absolute need to be aware of them:
+* Appache [Maven](https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html)
+* [Spring framework](https://spring.io/)
+* [docker](https://www.docker.com/) and [docker-compose](https://docs.docker.com/compose/)
 
 ## Training
 * [workshop 1: introduction](../workshop1/workshop1-introduction.md) 
