@@ -14,6 +14,7 @@ An initiation workshop about [CQRS](https://martinfowler.com/bliki/CQRS.html)
 To train with this workshop, you'll need:
 * notion in an object oriented language (java)
 * basics in SQL
+
 This training also make usage of the following technologies, but there is no absolute need to be aware of them:
 * Appache [Maven](https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html)
 * [Spring framework](https://spring.io/)
