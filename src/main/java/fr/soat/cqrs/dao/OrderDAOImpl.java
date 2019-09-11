@@ -79,9 +79,9 @@ public class OrderDAOImpl implements OrderDAO {
     @Override
     public void delete(Long orderId) {
         //FIXME
-        // delete order from product_order
         // delete order from order_line
-
+        // delete order from product_order
+        
         // publish an OrderDeletedEvent
         // hint: reload the order from DB to wrap it into the event
 
