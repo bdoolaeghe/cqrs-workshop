@@ -35,7 +35,7 @@ The `FrontService.order()` should now execute 3 operations:
 * per order line, compute the new *margin* to append for each bought product
 * update the *per product total margin* in `product_margin` table !
 
-### Data consistency
+### Data consistency
 These operations should be executed in a *same transaction* to keep data consistency. To define the transaction in a declarative way, use the `@Transactional` spring annotation on the service method:
 ```
 @Service
@@ -57,7 +57,7 @@ To update the total margin for each order product, you will have to compute in j
   margin on product = (product.price - product.supply_price) x order.quantity
 ```
 
-### Update the total margins in DB 
+### Update the total margins in DB 
 For each product, the computed margin should be:
 * either accumulated in `product_margin` table (add to the previous `total_margin` value for the product reference). 
 * or init the total_margin first value, when the product is bought for the first time (no row yet to update in `product_margin` !). In this case, we should insert the computed margin as `total_margin` value. 
