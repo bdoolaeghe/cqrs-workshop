@@ -24,7 +24,7 @@ cqrs-workshop/> make db/reset
 ```
 Check the postgres logs:
 ```
-cqrs-workshop/> make db/reset 
+cqrs-workshop/> make db/log 
 ```
 
 
