@@ -15,6 +15,10 @@ First of all, start the postgres server with already setup debezium plugins:
 ``` 
 cqrs-workshop$ make db/reset
 ```
+*NB: the docker container may conflict with previous workshop one. To remove the old postgres container, apply:*
+```
+cqrs-workshop$ docker rm my_postgres
+```
 Than, start the [Main](src/main/java/fr/soat/cqrs/Main.java) spring application, set up as a daemon to listen to and log SourceRecrds (events) from the slot.
 
 Now, open a `psql` CLI:
