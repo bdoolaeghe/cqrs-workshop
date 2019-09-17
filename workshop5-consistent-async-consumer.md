@@ -11,7 +11,7 @@ Create a new table `product_inventory` in `src/main/sql/1-schema.sql`
 CREATE TABLE product_inventory
 (
     product_reference INTEGER PRIMARY KEY,
-    quantity      INTEGER CHECK (quantity > 0)
+    quantity      INTEGER CHECK (quantity >= 0)
 );
 ```
 *N.B.: we add a constraint to make sure the quantity in inventory remains positive.*
