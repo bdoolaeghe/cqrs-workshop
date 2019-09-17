@@ -68,8 +68,11 @@ public class BackOfficeServiceImplTest {
         // Then
         assertThat(bestSales.getSales().size()).isEqualTo(3);
         assertThat(firstProduct(bestSales)).isEqualTo(TSHIRT_BOB_LEPONGE.name);
+        assertThat(firstProductMargin(bestSales)).isEqualTo(12f);
         assertThat(secondProduct(bestSales)).isEqualTo(ROBE_REINE_DES_NEIGES.name);
+        assertThat(secondProductMargin(bestSales)).isEqualTo(4f);
         assertThat(tThirdProduct(bestSales)).isEqualTo(CHAUSSETTES_SPIDERMAN.name);
+        assertThat(thirdProductMargin(bestSales)).isEqualTo(3f);
     }
 
     @Test
@@ -147,17 +150,29 @@ public class BackOfficeServiceImplTest {
     private void somebodyCancelOrders(Long orderId) {
         frontService.cancelOrder(orderId);
     }
-
     public String firstProduct(BestSales bestSales) {
         return bestSales.getSales().get(0).getProductName();
+    }
+
+    public Float firstProductMargin(BestSales bestSales) {
+        return bestSales.getSales().get(0).getProductMargin();
     }
 
     public String secondProduct(BestSales bestSales) {
         return bestSales.getSales().get(1).getProductName();
     }
 
+    public Float secondProductMargin(BestSales bestSales) {
+        return bestSales.getSales().get(1).getProductMargin();
+    }
+
+
     public String tThirdProduct(BestSales bestSales) {
         return bestSales.getSales().get(2).getProductName();
+    }
+
+    public Float thirdProductMargin(BestSales bestSales) {
+        return bestSales.getSales().get(2).getProductMargin();
     }
 
 }
