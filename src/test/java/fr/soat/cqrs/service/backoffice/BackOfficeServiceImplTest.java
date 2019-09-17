@@ -10,10 +10,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -21,6 +19,7 @@ import java.util.List;
 import static fr.soat.cqrs.model.order.OrderFixtures.ProductEnum.*;
 import static fr.soat.cqrs.model.order.OrderFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = AppConfig.class)
@@ -57,8 +56,11 @@ public class BackOfficeServiceImplTest {
 
         // Then
         assertThat(firstProduct(bestSales)).isEqualTo(TSHIRT_BOB_LEPONGE.name);
+        assertThat(firstProductMargin(bestSales)).isEqualTo(12f);
         assertThat(secondProduct(bestSales)).isEqualTo(ROBE_REINE_DES_NEIGES.name);
+        assertThat(secondProductMargin(bestSales)).isEqualTo(4f);
         assertThat(tThirdProduct(bestSales)).isEqualTo(CHAUSSETTES_SPIDERMAN.name);
+        assertThat(thirdProductMargin(bestSales)).isEqualTo(3f);
     }
 
     private void somebodyOrders(List... orderDescription) {
@@ -70,12 +72,25 @@ public class BackOfficeServiceImplTest {
         return bestSales.getSales().get(0).getProductName();
     }
 
+    public Float firstProductMargin(BestSales bestSales) {
+        return bestSales.getSales().get(0).getProductMargin();
+    }
+
     public String secondProduct(BestSales bestSales) {
         return bestSales.getSales().get(1).getProductName();
     }
 
+    public Float secondProductMargin(BestSales bestSales) {
+        return bestSales.getSales().get(1).getProductMargin();
+    }
+
+
     public String tThirdProduct(BestSales bestSales) {
         return bestSales.getSales().get(2).getProductName();
+    }
+
+    public Float thirdProductMargin(BestSales bestSales) {
+        return bestSales.getSales().get(2).getProductMargin();
     }
 
 
