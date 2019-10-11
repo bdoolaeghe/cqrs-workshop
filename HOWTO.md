@@ -24,6 +24,10 @@ cqrs-workshop/> make db/reset
 ```
 cqrs-workshop/> make db/psql
 ```
+* Afficher les logs de la DB :
+```
+cqrs-workshop/> make db/log
+```
 
 FAQ
 ===
