@@ -38,3 +38,14 @@ The *master* branch contains junit tests, but partly implemented production code
 Lombok is not activated in your IDE. 
 * Install the lombok plugin. File > Settings > plugins > marketplace (search lombok and install)
 * enable the annotation processing. In IntelliJ, File > settings > Build, execution, deployments > Compiler > Annotation processor > Enable annotation processing
+
+# make db/up fail with following message:
+```
+ERROR: for my_postgres  Cannot create container for service postgres: Conflict. The container name "/my_postgres" is already in use by container "5c813c29ec0f5beb0cf034b78a1496b313d7ae3bb1384aff5659151e64f1970f". You have to remove (or rename) that container to be able to reuse that name.
+```
+Try the following work aournd and retry:
+```
+cqrs-workshop/> docker stop my_postgres
+cqrs-workshop/> docker rm my_postgres
+cqrs-workshop/> make db/up
+```
