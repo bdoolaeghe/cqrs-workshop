@@ -30,7 +30,7 @@ public class AppConfig {
    ...
 }
 ```
-The, configure the `@Async` event listener methods `onOrderSavedEvent()` and `onOrderDeletedEvent()` to share the same thread through this thread pool:
+Then, configure the `@Async` event listener methods `onOrderSavedEvent()` and `onOrderDeletedEvent()` to share the same thread through this thread pool:
 ```
 
 @Service
