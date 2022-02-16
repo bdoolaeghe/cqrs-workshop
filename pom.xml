@@ -11,7 +11,7 @@
 
     <properties>
         <spring.version>5.1.8.RELEASE</spring.version>
-        <postgres.version>42.2.6</postgres.version>
+        <postgres.version>42.3.3</postgres.version>
         <slf4j.version>1.7.25</slf4j.version>
     </properties>
 
